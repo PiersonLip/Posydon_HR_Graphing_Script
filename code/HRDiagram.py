@@ -195,7 +195,7 @@ def color_map_HR_bokeh (DB,  # database
     # Smart title gen
     if title == 'default':
         title_parts = [
-            f"HR Diagram colored by {'log₁₀ ' if LogVar == 'T' else ''}{var_name}",
+            f"HR Diagram colored by {'Log$$_{10}$$ ' if LogVar == 'T' else ''}{var_name}",
             f"with {'relative' if Star_Radius == 'T' else f'radius={Star_Radius}'} point size"
         ]
         title = ", ".join(title_parts)
@@ -207,7 +207,7 @@ def color_map_HR_bokeh (DB,  # database
             color_data = 10 ** DB[variable]
         else:
             color_data = (DB[variable])
-        color_label = f"log₁₀ {var_name}"
+        color_label = f"Log$${10}$$ {var_name}"
         mapper = LogColorMapper(palette=smooth_palette, low= np.min(color_data), high=np.nanmax(color_data))
 
     else:
@@ -420,7 +420,7 @@ def HR_Diagram_Bokeh_Sample_Grapher(Database, DB_Name, Star_R = 'T', SaveLocatio
                         palette = palette)
     
     color_map_HR_bokeh (variable='lg_mtransfer_rate',  # variable to be used on the colorbar
-                        var_name=r'Log\[_{10}\] Mass Transfer Rate \[M_{\odot}/y\]',  # name of the colorbar var
+                        var_name=r'Mass Transfer Rate \[M_{\odot}/y\]',  # name of the colorbar var
                         DB = Database,  # database
                         db_name=databaseName,
                         LogVar='T',  # whether or not to Log10 the var used for the colorbar
@@ -452,23 +452,5 @@ def HR_Diagram_Bokeh_Sample_Grapher(Database, DB_Name, Star_R = 'T', SaveLocatio
                         fileName= 'S2_surface_he4',
                         palette = palette)
     
-    # color_map_HR_bokeh (variable='S1_spin',  # variable to be used on the colorbar
-    #                     var_name='Star One Spin Rate',  # name of the colorbar var
-    #                     DB = Database,  # database
-    #                     db_name=databaseName,
-    #                     LogVar='T',  # whether or not to Log10 the var used for the colorbar
-    #                     title='default',  # title of graph
-    #                     saveLoc=GraphSaveLocation,  # save location of graph
-    #                     Star_Radius= Star_R)
-    
-    # color_map_HR_bokeh (variable='S2_spin',  # variable to be used on the colorbar
-    #                     var_name='Star Two Spin Rate',  # name of the colorbar var
-    #                     DB = Database,  # database
-    #                     db_name=databaseName,
-    #                     LogVar='T',  # whether or not to Log10 the var used for the colorbar
-    #                     title='default',  # title of graph
-    #                     saveLoc=GraphSaveLocation,  # save location of graph
-    #                     Star_Radius= Star_R)
-
     if Fopen == 'T':
         webbrowser.open(ViewerSaveLocation.resolve().as_uri())
