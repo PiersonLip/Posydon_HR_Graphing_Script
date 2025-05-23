@@ -203,9 +203,12 @@ def color_map_HR_bokeh (DB,  # database
     # Color mapping
     color_data = DB[variable].replace([np.inf, -np.inf], np.nan).dropna()
     if LogVar == 'T':
-        color_data = np.log10(DB[variable])
+        if variable.startswith('lg'):
+            color_data = 10 ** DB[variable]
+        else:
+            color_data = (DB[variable])
         color_label = f"log₁₀ {var_name}"
-        mapper = LinearColorMapper(palette=smooth_palette, low= np.min(color_data), high=np.nanmax(color_data))
+        mapper = LogColorMapper(palette=smooth_palette, low= np.min(color_data), high=np.nanmax(color_data))
 
     else:
         color_data = DB[variable]
@@ -420,7 +423,7 @@ def HR_Diagram_Bokeh_Sample_Grapher(Database, DB_Name, Star_R = 'T', SaveLocatio
                         var_name=r'Log\[_{10}\] Mass Transfer Rate \[M_{\odot}/y\]',  # name of the colorbar var
                         DB = Database,  # database
                         db_name=databaseName,
-                        LogVar='F',  # whether or not to Log10 the var used for the colorbar
+                        LogVar='T',  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
                         Star_Radius= Star_R,
