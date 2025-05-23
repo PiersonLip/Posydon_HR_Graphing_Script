@@ -1,25 +1,14 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.patches as patches
-from pathlib import Path
-
-from bokeh.plotting import figure, output_file, save
-from bokeh.models import ColorBar, LinearColorMapper, LogColorMapper, ColumnDataSource, LogAxis
-from bokeh.transform import linear_cmap, log_cmap
-from bokeh.palettes import RdYlBu11
-import numpy as np
 import pandas as pd
 from pathlib import Path
 
 from bokeh.plotting import figure, output_file, save
 from bokeh.models import ColorBar, LinearColorMapper, LogColorMapper, ColumnDataSource, LogAxis, HoverTool
 from bokeh.transform import linear_cmap, log_cmap
-import numpy as np
-import pandas as pd
-from pathlib import Path
+from bokeh.palettes import RdYlBu11
 from bokeh.palettes import interp_palette
-
-
 
 import inspect
 
@@ -390,7 +379,7 @@ def HR_Diagram_Bokeh_Sample_Grapher(Database, DB_Name, Star_R = 'T', SaveLocatio
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
                         Star_Radius = Star_R,
-                        fileName='S1_Mass',
+                        fileName='S1_mass',
                         palette = palette),
                         
     
@@ -402,7 +391,7 @@ def HR_Diagram_Bokeh_Sample_Grapher(Database, DB_Name, Star_R = 'T', SaveLocatio
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
                         Star_Radius = Star_R,
-                        fileName='S2_Mass',
+                        fileName='S2_mass',
                         palette = palette)
     
     color_map_HR_bokeh (variable='orbital_period',  # variable to be used on the colorbar
@@ -413,7 +402,7 @@ def HR_Diagram_Bokeh_Sample_Grapher(Database, DB_Name, Star_R = 'T', SaveLocatio
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
                         Star_Radius= Star_R,
-                        fileName='Orbital_Period',
+                        fileName='orbital_period',
                         palette = palette)
     
     color_map_HR_bokeh (variable='eccentricity',  # variable to be used on the colorbar
@@ -424,7 +413,7 @@ def HR_Diagram_Bokeh_Sample_Grapher(Database, DB_Name, Star_R = 'T', SaveLocatio
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
                         Star_Radius= Star_R,
-                        fileName='Eccentricity',
+                        fileName='eccentricity',
                         palette = palette)
     
     color_map_HR_bokeh (variable='lg_mtransfer_rate',  # variable to be used on the colorbar
