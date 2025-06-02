@@ -224,8 +224,8 @@ def color_map_HR_bokeh (DB,  # database
 
     # Set up plot
     p = figure(
-        width=600,
-        height=600,
+        width=700,
+        height=700,
         title=title,
         x_axis_label='log₁₀ Temperature [K]',
         y_axis_label='log₁₀ Luminosity [L☉]',
@@ -286,6 +286,8 @@ def color_map_HR_bokeh (DB,  # database
     save(p)
 
 def HR_Diagram_Bokeh_Sample_Grapher(Database, databaseName = 'DB', Star_R = '5', SaveLocation = 'default'):
+    
+
     color_map_HR_bokeh (variable='S1_mass',  # variable to be used on the colorbar
                         name_of_var='Star One Mass',  # name of the colorbar var
                         DB = Database,  # database
