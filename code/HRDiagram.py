@@ -20,18 +20,11 @@ from PIL import Image
 
 # function for making HR diagrams using POSYDON data
 
-def get_caller_var_name(var):
-    frame = inspect.currentframe().f_back
-    for name, val in frame.f_locals.items():
-        if id(val) == id(var):
-            return name
-    return "DB"
-
 def color_map_HR (DB, # database
                   db_name,
                   Star = 2,
                   variable = 'S1_mass', # variable to be used on the colorbar
-                  var_name = 'Star One Mass', # name of the colorbar var
+                  var_name = 'default', # name of the colorbar var
                   LogVar = 'F', # whether or not to Log10 the var used for the colarbar 
                   title = 'default', #title of graph
                   saveLoc = '', #save location of graph
@@ -89,8 +82,8 @@ def color_map_HR (DB, # database
     colors = c
 
     # labels
-    ax.set_xlabel(r'$log_{10}$ Temperature [K]')
-    ax.set_ylabel(r'$log_{10}$ Luminosity [$L_{\odot}$]')
+    ax.set_xlabel(r'log$_{10}$ Temperature [K]')
+    ax.set_ylabel(r'log$_{10}$ Luminosity [$L_{\odot}$]')
     
     if ylimit == 'T':
         ax.set_ylim(minR, maxR)
@@ -103,7 +96,7 @@ def color_map_HR (DB, # database
     # color bar stuff
     cbar = fig.colorbar(scatter, ax=ax, orientation='vertical')  # <-- link colorbar to that scatter
     if LogVar == 'F':
-        cbar.set_label(var_name) 
+        cbar.set_label(var_name if var_name != 'default' else variable) 
     else: 
         cbar.set_label(r'log$_{10}$ '+ var_name)
     
@@ -130,16 +123,10 @@ def color_map_HR (DB, # database
             )
             ax.add_patch(rect) # graphs a `patch`, looks better then error bars IMO
 
-    # Determine Star_Radius string
-    if Star_Radius == 'T':
-        Star_Radius_STR = 'dynR'
-    else:
-        Star_Radius_STR = f'R{int(Star_Radius)}'
-
     # Smart title if default
     if title == 'default':
         log_mode = str(LogVar).strip().upper() == 'T'
-        title = f"HR Diagram of {db_name} colored by {'log₁₀ ' if log_mode else ''}{var_name} with point radius: {Star_Radius_STR}"
+        title = f"HR Diagram of {db_name} colored by {'log₁₀ ' if log_mode else ''}{var_name if var_name != 'default' else variable} with {'relative' if Star_Radius == 'T' else f'radius={Star_Radius}'} point size"
     ax.set_title(title)
     # Smart filename if default
     if fileName == 'Default':
@@ -147,7 +134,7 @@ def color_map_HR (DB, # database
             db_name,
             variable,
             'log10' if LogVar == 'T' else 'linear',
-            Star_Radius_STR
+            Star_Radius if Star_Radius != 'T' else 'dynR'
         ]
         fileName = '_'.join(file_parts) + '.png'
         fileName = fileName.replace(" ", "_")
