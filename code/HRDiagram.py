@@ -16,6 +16,8 @@ import os
 
 import webbrowser
 
+from PIL import Image
+
 # function for making HR diagrams using POSYDON data
 
 def get_caller_var_name(var):
@@ -26,6 +28,8 @@ def get_caller_var_name(var):
     return "DB"
 
 def color_map_HR (DB, # database
+                  db_name,
+                  Star = 2,
                   variable = 'S1_mass', # variable to be used on the colorbar
                   var_name = 'Star One Mass', # name of the colorbar var
                   LogVar = 'F', # whether or not to Log10 the var used for the colarbar 
@@ -45,7 +49,8 @@ def color_map_HR (DB, # database
                   maxR = 6.5, # max y val
                   style = 'default', #graph style
                   fileName ='Default', #filename, if set to default one is autogened
-                  dpi = 200): # graph res
+                  dpi = 200,
+                  open = 'F'): # graph res
     
     plt.style.use(style) #graph style
     fig, ax = plt.subplots(figsize = (8,8))  # create figure and axis
@@ -55,15 +60,26 @@ def color_map_HR (DB, # database
     
     cm = plt.colormaps['RdYlBu']  #This is the color map for the stars
     
-    if Star_Radius == 'T':
-        r_dot = 10 ** DB['S2_log_R']
-        # plt.suptitle("Size of dot corresponds to Donor radius", fontsize=10, family="monospace", color='.5')
-    else:
-        r_dot = Star_Radius
+    if Star == 2: # this logic is kinda horrid, revisit probably
+        if Star_Radius == 'T':
+            r_dot = 10 ** DB['S2_log_R']
+            # plt.suptitle("Size of dot corresponds to Donor radius", fontsize=10, family="monospace", color='.5')
+        else:
+            r_dot = Star_Radius
 
-    # assings axis
-    Temp = np.log10((((10 ** DB['S2_log_L'])/(10 ** DB['S2_log_R'])**2)**.25) * 5772)
-    Lum = DB['S2_log_L']
+        # assings axis
+        Temp = np.log10((((10 ** DB['S2_log_L'])/(10 ** DB['S2_log_R'])**2)**.25) * 5772)
+        Lum = DB['S2_log_L']
+    else: 
+        if Star_Radius == 'T':
+            r_dot = 10 ** DB['S2_log_R']
+            # plt.suptitle("Size of dot corresponds to Donor radius", fontsize=10, family="monospace", color='.5')
+        else:
+            r_dot = Star_Radius
+
+        # assings axis
+        Temp = np.log10((((10 ** DB['S2_log_L'])/(10 ** DB['S2_log_R'])**2)**.25) * 5772)
+        Lum = DB['S2_log_L']
 
     # binds the color of the scatter points to the x location (temp) of the star
     if LogVar == 'T':
@@ -114,11 +130,6 @@ def color_map_HR (DB, # database
             )
             ax.add_patch(rect) # graphs a `patch`, looks better then error bars IMO
 
-
-    # everything below is for auto building file default file names
-    # Get short name of DB if possible
-    db_name_short = get_caller_var_name(DB)
-
     # Determine Star_Radius string
     if Star_Radius == 'T':
         Star_Radius_STR = 'dynR'
@@ -128,12 +139,12 @@ def color_map_HR (DB, # database
     # Smart title if default
     if title == 'default':
         log_mode = str(LogVar).strip().upper() == 'T'
-        title = f"{db_name_short} HR Diagram colored by {'log₁₀ ' if log_mode else ''}{var_name} with point radius: {Star_Radius_STR}"
+        title = f"HR Diagram of {db_name} colored by {'log₁₀ ' if log_mode else ''}{var_name} with point radius: {Star_Radius_STR}"
     ax.set_title(title)
     # Smart filename if default
     if fileName == 'Default':
         file_parts = [
-            db_name_short,
+            db_name,
             variable,
             'log10' if LogVar == 'T' else 'linear',
             Star_Radius_STR
@@ -149,10 +160,14 @@ def color_map_HR (DB, # database
     plt.style.use('default')
     plt.close()
 
+    if open == 'T':
+        Graph = Image.open(save_path)  # or .png, .bmp, etc.
+        Graph.show()
 
 
 def color_map_HR_bokeh (DB,  # database
-                        db_name="Default",
+                        db_name,
+                        Star = 2,
                         variable='S1_mass',  # variable to be used on the colorbar
                         var_name='default',  # name of the colorbar var
                         LogVar='F',  # whether or not to Log10 the var used for the colorbar
@@ -166,7 +181,7 @@ def color_map_HR_bokeh (DB,  # database
                         exampleTempMax=0,
                         exampleLumMin=0,
                         exampleLumMax=0,
-                        Star_Radius='T',  # true OR VALUE. If not set to T, must input a val for the star radius
+                        Star_Radius= 'T',  # true OR VALUE. If not set to T, must input a val for the star radius
                         ylimit='F',  # whether or not to use a set range or autogen
                         minR=1.5,  # minimum Y limit
                         maxR=6.5,  # max y val
@@ -181,24 +196,37 @@ def color_map_HR_bokeh (DB,  # database
         smooth_palette = palette
 
     # Output filename generation
-    if Star_Radius == 'T':
-        r_dot= 4 ** DB['S2_log_R'] + 1
-        Star_Radius_STR = 'star_radius'
-    else:
-        r_dot = float(Star_Radius)
-        Star_Radius_STR = f"radius_{int(Star_Radius)}"
+    if Star == 2:
+        if Star_Radius == 'T':
+            r_dot= 4 ** DB['S2_log_R'] + 1
+            Star_Radius_STR = 'star_radius'
+        else:
+            r_dot = float(Star_Radius)
+            Star_Radius_STR = f"radius_{int(Star_Radius)}"
 
-    # Axis values
-    Temp = np.log10((((10 ** DB['S2_log_L']) / (10 ** DB['S2_log_R']) ** 2) ** 0.25) * 5772)
-    Lum = DB['S2_log_L']
+        # Axis values
+        Temp = np.log10((((10 ** DB['S2_log_L']) / (10 ** DB['S2_log_R']) ** 2) ** 0.25) * 5772)
+        Lum = DB['S2_log_L']
+
+    else: 
+        if Star_Radius == 'T':
+            r_dot= 4 ** DB['S1_log_R'] + 1
+            Star_Radius_STR = 'star_radius'
+        else:
+            r_dot = float(Star_Radius)
+            Star_Radius_STR = f"radius_{int(Star_Radius)}"
+
+        # Axis values
+        Temp = np.log10((((10 ** DB['S1_log_L']) / (10 ** DB['S1_log_R']) ** 2) ** 0.25) * 5772)
+        Lum = DB['S1_log_L']
 
     # Smart title gen
     if title == 'default':
-        title_parts = [
-            f"HR Diagram colored by {'Log$$_{10}$$ ' if LogVar == 'T' else ''}{var_name}",
-            f"with {'relative' if Star_Radius == 'T' else f'radius={Star_Radius}'} point size"
-        ]
-        title = ", ".join(title_parts)
+            title_parts = [
+                f"HR Diagram of {db_name} colored by {'Log$$_{10}$$ ' if LogVar == 'T' else ''}{var_name if var_name != 'default' else variable}"
+                f" with {'relative' if Star_Radius == 'T' else f'radius={Star_Radius}'} point size"
+            ]
+            title = ", ".join(title_parts)
 
     # Color mapping
     color_data = DB[variable].replace([np.inf, -np.inf], np.nan).dropna()
@@ -212,7 +240,9 @@ def color_map_HR_bokeh (DB,  # database
 
     else:
         color_data = DB[variable]
-        color_label = var_name
+        if var_name != 'default':
+            color_label = var_name
+        else: color_label = variable
         mapper = LinearColorMapper(palette=smooth_palette, low=np.nanmin(color_data), high=np.nanmax(color_data))
 
 
