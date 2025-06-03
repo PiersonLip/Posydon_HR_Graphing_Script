@@ -13,36 +13,25 @@
 
     <h2>HR Diagram Galore</h2>
     <select id="graphSelect">
-    <option value="code/Sampler/XBs/viewer.html">X-ray Binaries</option>
-    <option value="code/Sampler/HMXBs/viewer.html">HMXBs</option>
-    <option value="code/Sampler/LMXBs/viewer.html">LMXBs</option>
-    <option value="code/Sampler/UCXBs/viewer.html">UCXBs</option>
-    <option value="code/Sampler/Contacts/viewer.html">Contact Binaries</option>
+    <option value="Sampler/XBs/viewer.html">X-ray Binaries</option>
+    <option value="Sampler/HMXBs/viewer.html">HMXBs</option>
+    <option value="Sampler/LMXBs/viewer.html">LMXBs</option>
+    <option value="Sampler/UCXBs/viewer.html">UCXBs</option>
+    <option value="Sampler/Contacts/viewer.html">Contact Binaries</option>
     </select>
     
-    <label for="altCheckbox">Enable Star Radius</label>
-    <input type="checkbox" id="dynamRCheckbox">
-
     <iframe id="graphFrame" src=""></iframe>
 
     <script>
     const select = document.getElementById("graphSelect");
     const frame = document.getElementById("graphFrame");
-    const dynamRCheckbox = document.getElementById('dynamRCheckbox');
-
     function updateFrame() {
         let selectedPath = select.value;
-
-        if (dynamRCheckbox.checked) {
-            // Insert "_DynamR" after the base folder (e.g. "graphs/XBs/" → "graphs/XBs_DynamR/")
-            selectedPath = selectedPath.replace(/(Sampler\/[^\/]+)/, "$1_DynamR");
-        }
 
         frame.src = selectedPath;
     }
 
     select.addEventListener("change", updateFrame);
-    dynamRCheckbox.addEventListener("change", updateFrame);
     updateFrame(); // Load default on startup
     </script>
 
