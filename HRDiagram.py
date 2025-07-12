@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.patches as patches
 import pandas as pd
-from pathlib import Path
 
+from pathlib import Path
 from bokeh.plotting import figure, output_file, save
 from bokeh.models import ColorBar, LinearColorMapper, LogColorMapper, ColumnDataSource, LogAxis, HoverTool
 from bokeh.transform import linear_cmap, log_cmap
@@ -11,9 +11,7 @@ from bokeh.palettes import RdYlBu11
 from bokeh.palettes import interp_palette
 
 import inspect
-
 import os
-
 import webbrowser
 
 from PIL import Image
@@ -22,7 +20,7 @@ from PIL import Image
 
 def color_map_HR (DF, # database
                   DF_name,
-                  Star = 2,
+                  Star = 2, # which star to actually graph in the binary
                   variable = 'S1_mass', # variable to be used on the colorbar
                   var_name = 'default', # name of the colorbar var
                   LogVar = False, # whether or not to Log10 the var used for the colarbar 
@@ -48,12 +46,12 @@ def color_map_HR (DF, # database
     plt.style.use(style) #graph style
     fig, ax = plt.subplots(figsize = (8,8))  # create figure and axis
     ax.grid(True)  # turn on grid
-    ax.set_axisbelow(True)  # make grid lines draw below plotted points
+    ax.set_axisbelow(True)  # make grid lines draw below plotted points. totally an aesthetic choice
     ax.yaxis.grid(color='gray', linestyle='dashed')  # customize grid style
     
     cm = plt.colormaps['RdYlBu']  #This is the color map for the stars
     
-    if Star == 2: # this logic is kinda horrid, revisit probably
+    if Star == 2: # this logic is kinda horrid, revisit probably. and doesnt work! 
         if Star_Radius == True:
             r_dot = 10 ** DF['S2_log_R']
             # plt.suptitle("Size of dot corresponds to Donor radius", fontsize=10, family="monospace", color='.5')
@@ -65,14 +63,14 @@ def color_map_HR (DF, # database
         Lum = DF['S2_log_L']
     else: 
         if Star_Radius == True:
-            r_dot = 10 ** DF['S2_log_R']
+            r_dot = 10 ** DF['S1_log_R']
             # plt.suptitle("Size of dot corresponds to Donor radius", fontsize=10, family="monospace", color='.5')
         else:
             r_dot = Star_Radius
 
         # assings axis
-        Temp = np.log10((((10 ** DF['S2_log_L'])/(10 ** DF['S2_log_R'])**2)**.25) * 5772)
-        Lum = DF['S2_log_L']
+        Temp = np.log10((((10 ** DF['S1_log_L'])/(10 ** DF['S1_log_R'])**2)**.25) * 5772)
+        Lum = DF['S1_log_L']
 
     # binds the color of the scatter points to the x location (temp) of the star
     if LogVar == True:
