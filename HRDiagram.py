@@ -4,11 +4,12 @@ import matplotlib.patches as patches
 import pandas as pd
 
 from pathlib import Path
-from bokeh.plotting import figure, output_file, save
+from bokeh.plotting import figure, output_file, save, show
 from bokeh.models import ColorBar, LinearColorMapper, LogColorMapper, ColumnDataSource, LogAxis, HoverTool
 from bokeh.transform import linear_cmap, log_cmap
 from bokeh.palettes import RdYlBu11
 from bokeh.palettes import interp_palette
+from bokeh.io import output_notebook
 
 import inspect
 import os
@@ -18,14 +19,27 @@ from PIL import Image
 
 # function for making HR diagrams using POSYDON data
 
-def color_map_HR (DF, # database
-                  DF_name,
+def color_map_HR (DF, # pandas dataframe 
+                  DF_name, # name of the pandas DF. ex. a dataframe named XBs -> DF_name = "X-ray Binaries". This is used for automatic filename generation
                   Star = 2, # which star to actually graph in the binary
                   variable = 'S1_mass', # variable to be used on the colorbar
                   var_name = 'default', # name of the colorbar var
                   LogVar = False, # whether or not to Log10 the var used for the colarbar 
                   title = 'default', #title of graph
                   saveLoc = '', #save location of graph
+
+
+                  Star_Radius = True,  # Boolean val. If not set to True, must input a val for the star radius whether or not to automatically use the star reference. ex. Star_Radius = 4
+                  style = 'default', #graph style, standard plt ones 
+                  fileName ='Default', #filename, if set to default one is autogened
+                  dpi = 200,
+                  showGraph= False, #whether or not to display graph in-line
+ 
+                  ylimit = True, # whether or not to use a set range or autogen
+                  minR = 1.5, # min y bounds on graph
+                  maxR = 6.5, # max y bounds on graph
+
+                  #reference star graphing
                   referenceStar = False, # T/F, whether or not to reference point to graph
                   referenceStarRange = False, # T/F whether or not to graph an error range for the reference point
                   exampleLum = 0, # ref points lum. NOT LOGGED
@@ -33,15 +47,7 @@ def color_map_HR (DF, # database
                   exampleTempMin = 0, 
                   exampleTempMax = 0, 
                   exampleLumMin = 0, 
-                  exampleLumMax = 0, 
-                  Star_Radius = True,  # Boolean VALUE. If not set to True, must input a val for the star radius whether or not to automatically use the star reference
-                  ylimit = True, # whether or not to use a set range or autogen
-                  minR = 1.5, # minimum Y limit
-                  maxR = 6.5, # max y val
-                  style = 'default', #graph style
-                  fileName ='Default', #filename, if set to default one is autogened
-                  dpi = 200,
-                  open = False): # graph res
+                  exampleLumMax = 0): # graph res
     
     plt.style.use(style) #graph style
     fig, ax = plt.subplots(figsize = (8,8))  # create figure and axis
@@ -54,7 +60,6 @@ def color_map_HR (DF, # database
     if Star == 2: # this logic is kinda horrid, revisit probably. and doesnt work! 
         if Star_Radius == True:
             r_dot = 10 ** DF['S2_log_R']
-            # plt.suptitle("Size of dot corresponds to Donor radius", fontsize=10, family="monospace", color='.5')
         else:
             r_dot = Star_Radius
 
@@ -64,7 +69,6 @@ def color_map_HR (DF, # database
     else: 
         if Star_Radius == True:
             r_dot = 10 ** DF['S1_log_R']
-            # plt.suptitle("Size of dot corresponds to Donor radius", fontsize=10, family="monospace", color='.5')
         else:
             r_dot = Star_Radius
 
@@ -142,86 +146,104 @@ def color_map_HR (DF, # database
     save_path = Path(saveLoc) / fileName
     plt.savefig(save_path, dpi=dpi)
     plt.style.use('default')
+
+    if showGraph== True:
+        plt.show()
     plt.close()
 
-    if open == True:
-        Graph = Image.open(save_path)  # or .png, .bmp, etc.
-        Graph.show()
 
+def color_map_HR_bokeh (DF,  # Pandas dataframe to used 
+                        DF_name, # name of the Dataframe, this will be used for automatic title and filename generation.
+                        Star = 2, # which star, 1 or 2, of the POSYDON DF to graph
 
-def color_map_HR_bokeh (DF,  # database
-                        DF_name,
-                        Star = 2,
                         variable='S1_mass',  # variable to be used on the colorbar
                         var_name='default',  # name of the colorbar var
-                        LogVar = False,  # whether or not to Log10 the var used for the colorbar
-                        title='default',  # title of graph
-                        saveLoc='',  # save location of graph
+                        LogVar = False,  # whether or not to Log10 the var used for the colorbar. for example, one would need to log10 orbital period in order for it to be readable
+
+                        title='default',  # title of graph. if let to default it will automatically populate one based on input conditions
+                        saveLoc='',  # filepath save location of graph
+                        Star_Radius= True,  # true OR VALUE. If not set to T, must input a val for the star radius
+                        fileName='Default',  # filename, if set to default one is autogened
+                        showGraph= True, # whether or not to output the graph inline. this is very useful to disable when generating repetable graphs that are being used for something else, as it prevents bloat. for example, figs for a LaTeX paper. 
+                        palette = 'Default',
+
+                        # y-limits
+
+                        # this may not be needed entirely? very few cases where you'd want y-lims and wouldnt just be focused on the loaded DF
+                        ylimit=False,  # whether or not to use a set range or automatically fit one 
+                        minR=1.5,  # min Y limit on graph
+                        maxR=6.5,  # max y limit on graph
+
+                        # reference star graphing logic
                         referenceStar=False,  # T/F, whether or not to reference point to graph
-                        referenceStarName = 'Reference Star',
+                        referenceStarName = 'Reference Star', # name of the reference star. ex. v404 Cygni 
                         referenceStarRange=False,  # T/F whether or not to graph an error range for the reference point
                         exampleLum=0,  # ref points lum. NOT LOGGED
                         exampleTemp=0,  # ref points temp. NOT LOGGED
                         exampleTempMin=0,
                         exampleTempMax=0,
                         exampleLumMin=0,
-                        exampleLumMax=0,
-                        Star_Radius= True,  # true OR VALUE. If not set to T, must input a val for the star radius
-                        ylimit=False,  # whether or not to use a set range or autogen
-                        minR=1.5,  # minimum Y limit
-                        maxR=6.5,  # max y val
-                        fileName='Default',  # filename, if set to default one is autogened
-                        open = False,
-                        palette = 'Default'):  
+                        exampleLumMax=0):  
     
-    # Build custom smooth palette
+    # whether or not to output the graph to be inline
+    if showGraph == True: 
+        output_notebook()
+
+    # Build custom smooth palette. this is because the RdYlBu11 pallet by default only has 11 values. 
     if palette == 'Default':
         smooth_palette = interp_palette(RdYlBu11[::-1], 256)
     else:
         smooth_palette = palette
 
-    # Output filename generation
+    # generating temp and lum data based on if star 1 or 2 is being used. note this does not have proper protection logic currently and needs a way of dropping NaN values
     if Star == 2:
         if Star_Radius == True:
-            r_dot= 4 ** DF['S2_log_R'] + 1
-            Star_Radius_STR = 'star_radius'
+            r_dot= 4 ** DF['S2_log_R'] + 1 # get star radius from DF. the +1 is to prevent radius values of 0... which is fine cause its all relative anyway
         else:
-            r_dot = float(Star_Radius)
-            Star_Radius_STR = f"radius_{int(Star_Radius)}"
+            if isinstance(Star_Radius, int): # check if Star_Radius is a float, and if so, set the r_dot to it. 
+                r_dot = float(Star_Radius) 
+            else:
+                print("Star_Radius must be an int!")
 
-        # Axis values
-        Temp = np.log10((((10 ** DF['S2_log_L']) / (10 ** DF['S2_log_R']) ** 2) ** 0.25) * 5772)
+        # Assign temp and lum Value
+
+        Temp = np.log10( #rearranged Stefan-Boltzmann equation for calculating Temp based off of lum and radius
+                (
+                    (10 ** DF['S2_log_L']) /
+                    (10 ** DF['S2_log_R']) ** 2
+                ) ** 0.25
+                * 5772
+            ) 
         Lum = DF['S2_log_L']
 
     else: 
         if Star_Radius == True:
             r_dot= 4 ** DF['S1_log_R'] + 1
-            Star_Radius_STR = 'star_radius'
         else:
             r_dot = float(Star_Radius)
-            Star_Radius_STR = f"radius_{int(Star_Radius)}"
 
         # Axis values
-        Temp = np.log10((((10 ** DF['S1_log_L']) / (10 ** DF['S1_log_R']) ** 2) ** 0.25) * 5772)
+        Temp = np.log10( #rearranged Stefan-Boltzmann equation for calculating Temp based off of lum and radius
+                (
+                    (10 ** DF['S2_log_L']) /
+                    (10 ** DF['S2_log_R']) ** 2
+                ) ** 0.25
+                * 5772
+            )
         Lum = DF['S1_log_L']
 
-    # Smart title gen
+    # Smart title gen. sorta rough to look at, but simple when boken down
     if title == 'default':
-            title_parts = [
-                f"HR Diagram of {DF_name} colored by {'Log$$_{10}$$ ' if LogVar == True else ''}{var_name if var_name != 'default' else variable}"
-                f" with {'relative' if Star_Radius == True else f'radius={Star_Radius}'} point size"
-            ]
-            title = ", ".join(title_parts)
-
+        title = f"HR Diagram of {DF_name} colored by {'Log$$_{10}$$ ' if LogVar == True else ''}{var_name if var_name != 'default' else variable} with {'relative' if Star_Radius == True else f'radius={Star_Radius}'} point size "
+    
+    # check if colorVar is already logged to prevent "double logging"
     if variable.startswith('lg'):
         LogVar = True
 
-    # Color mapping
-    color_data = DF[variable].replace([np.inf, -np.inf], np.nan).dropna()
-    
-    if LogVar == True:
+    # Color mapping    
+    if LogVar == True: # yes this is slightly redundent, but this really makes sure that colordata isnt logged twice and is properly graphed
         if variable.startswith('lg'):
-            color_data = 10 ** DF[variable]
+            color_data = 10 ** DF[variable] #delog logged var for the LogColorMapper 🫠. this sounds insane, but this makes sure the colorbar shows values in proper 10^n format
         else:
             color_data = (DF[variable])
         color_label = f"Log$${10}$$ {var_name}"
@@ -235,7 +257,7 @@ def color_map_HR_bokeh (DF,  # database
         mapper = LinearColorMapper(palette=smooth_palette, low=np.nanmin(color_data), high=np.nanmax(color_data))
 
 
-    # Ensure all inputs are valid lists for ColumnDataSource
+    # Ensure all inputs are valid lists
     Temp_list = Temp.tolist()
     Lum_list = Lum.tolist()
     color_val_list = color_data.tolist()
@@ -246,19 +268,19 @@ def color_map_HR_bokeh (DF,  # database
     else:
         size_list = [r_dot] * len(DF)
 
-    # Build the source dict
+    # Build the source dict for the figure. this includes both the standerd x/y cords and color vals
     source = ColumnDataSource(data=dict(
-        Temp=Temp_list,
-        Lum=Lum_list,
-        size=size_list,
-        color_val=color_val_list,
-        log_Temp=np.round(Temp_list, 2),
-        log_Lum=np.round(Lum_list, 2),
-        var_val=np.round(color_val_list, 2)
+        Temp=Temp_list, # "X Value"
+        Lum=Lum_list, # "Y-value"
+        size=size_list, # size of point
+        color_val=color_val_list, # color value
+        log_Temp=np.round(Temp_list, 2), # temp hovor value
+        log_Lum=np.round(Lum_list, 2), # Lum hover value
+        var_val=np.round(color_val_list, 2) # variable hover value 
     ))
 
 
-    # Set up plot
+    # Set up plot 
     p = figure(
         width=700,
         height=700,
@@ -272,6 +294,7 @@ def color_map_HR_bokeh (DF,  # database
         p.y_range.start = minR
         p.y_range.end = maxR
 
+    # all stuff to make the hover tools work
     hover = HoverTool(
         tooltips=[
             ("log₁₀ Temp", "@log_Temp"),
@@ -300,21 +323,21 @@ def color_map_HR_bokeh (DF,  # database
     )
 
 
-    # Invert X axis 
+    # Invert X axis. i love how easy this is in bokeh 🙏
     p.x_range.flipped = True
 
-    # Add color bar
+    # Add color bar and put it on the right
     color_bar = ColorBar(color_mapper=mapper, label_standoff=12, title=color_label, location=(0, 0))
     p.add_layout(color_bar, 'right')
 
-    #example source
+    #example star source data
     exampleSource = ColumnDataSource(data=dict(
         Temp=[np.log10(exampleTemp)],
         Lum=[np.log10(exampleLum)],
         label=[referenceStarName]
     ))
 
-    # Reference point marker and range box
+    # Reference star point marker and range box
     if referenceStar == True:
         star = p.scatter(
             x='Temp',
@@ -327,13 +350,12 @@ def color_map_HR_bokeh (DF,  # database
         )
         ref_hover.renderers = [star]
 
-        # rect range of values
-
+        # rect range of values of the star
         if referenceStarRange == True:
             width = np.log10(exampleTempMax) - np.log10(exampleTempMin)
             height = np.log10(exampleLumMax) - np.log10(exampleLumMin)
 
-            # example box source 
+            # example box source. this has some extra logic so when hovering over it it gives useful info
             rect_source = ColumnDataSource(data=dict(
                 x=[np.log10(exampleTempMin) + width / 2],
                 y=[np.log10(exampleLumMin) + height / 2],
@@ -364,9 +386,9 @@ def color_map_HR_bokeh (DF,  # database
                 renderers=[rect]
             )
             p.add_tools(range_hover)
-            p.add_tools(ref_hover) # this seems janky, and kinda is, but it prevents the error box from drawing over the ref star hover box.
+            p.add_tools(ref_hover) # this seems janky, and maybe it kinda is, but it prevents the error range box from drawing over the ref star hover box. some draw order stuff
 
-    # Auto-generate filename if default
+    # Auto-generate filename if left to default
     if fileName == 'Default':
         file_parts = [
             DF_name,
@@ -378,24 +400,30 @@ def color_map_HR_bokeh (DF,  # database
 
     fileName = fileName if fileName.endswith('.html') else f"{fileName}.html"
     
+    if showGraph == True:
+        show(p)
+    save(p)
+
     save_path = Path(saveLoc) / fileName
     output_file(save_path)
-    save(p)
-    if open == True: 
-        webbrowser.open(save_path.resolve().as_uri())
+
+
+
+    # if showGraph== True: 
+    #     webbrowser.open(save_path.resolve().as_uri())
 
 def HR_Diagram_Bokeh_Sample_Grapher(Database, 
-                                    DF_Name, 
+                                    DataFrame_Name, 
                                     Star_R = True, 
                                     SaveLocation = 'default', 
                                     palette = 'Default', 
                                     Fopen = True):
-    databaseName = 'DF'
+
 
     #file location saving logic
     if SaveLocation == 'default':
-        GraphSaveLocation = Path().resolve() / 'Sampler' / DF_Name.replace(" ", "_") / 'graphs'
-        ViewerSaveLocation = Path().resolve() / 'Sampler' / DF_Name.replace(" ", "_") / 'viewer.html'
+        GraphSaveLocation = Path().resolve() / 'Sampler' / DataFrame_Name.replace(" ", "_") / 'graphs'
+        ViewerSaveLocation = Path().resolve() / 'Sampler' / DataFrame_Name.replace(" ", "_") / 'viewer.html'
     else:
         GraphSaveLocation = Path().resolve() / SaveLocation / 'graphs'
         ViewerSaveLocation = Path().resolve() / SaveLocation /'viewer.html'
@@ -427,7 +455,7 @@ def HR_Diagram_Bokeh_Sample_Grapher(Database,
     <option value="graphs/orbital_period.html">Orbital Period (log10)</option>
     </select>
 
-    <label for="altCheckbox">Enable Dynamic Star Radius</label>
+    <label for="altCheckbox">Disable Dynamic Star Radius</label>
     <input type="checkbox" id="dynmRCheckbox">
 
     <iframe id="graphFrame" src=""></iframe>
@@ -458,150 +486,164 @@ def HR_Diagram_Bokeh_Sample_Grapher(Database,
     color_map_HR_bokeh (variable='S1_mass',  # variable to be used on the colorbar
                         var_name=r'Star One Mass [$$M_{\odot}$$]',  # name of the colorbar var
                         DF = Database,  # database
-                        DF_name=databaseName,
+                        DF_name=DataFrame_Name,
                         LogVar = False,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
-                        saveLoc=GraphSaveLocation,  # save location of graph
+                        saveLoc=GraphSaveLocation,  # save location of graph 
                         Star_Radius = Star_R,
                         fileName='S1_mass',
-                        palette = palette),
+                        palette = palette,
+                        showGraph=False), # type: ignore
     
     color_map_HR_bokeh (variable='S1_mass',  # variable to be used on the colorbar
                         var_name=r'Star One Mass [$$M_{\odot}$$]',  # name of the colorbar var
                         DF = Database,  # database
-                        DF_name=databaseName,
+                        DF_name=DataFrame_Name,
                         LogVar = False,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
                         fileName='S1_mass_dynmR',
-                        palette = palette),
+                        palette = palette,
+                        showGraph=False), # type: ignore
                         
-    
+
     color_map_HR_bokeh (variable='S2_mass',  # variable to be used on the colorbar
                         var_name=r'Star Two Mass [$$M_{\odot}$$]',  # name of the colorbar var
                         DF = Database,  # database
-                        DF_name=databaseName,
+                        DF_name=DataFrame_Name,
                         LogVar = False,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
                         Star_Radius = Star_R,
                         fileName='S2_mass',
-                        palette = palette)
+                        palette = palette,
+                        showGraph=False)
     
     color_map_HR_bokeh (variable='S2_mass',  # variable to be used on the colorbar
                         var_name=r'Star Two Mass [$$M_{\odot}$$]',  # name of the colorbar var
                         DF = Database,  # database
-                        DF_name=databaseName,
+                        DF_name=DataFrame_Name,
                         LogVar = False,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
                         fileName='S2_mass_dynmR',
-                        palette = palette)
+                        palette = palette,
+                        showGraph=False)
     
     color_map_HR_bokeh (variable='orbital_period',  # variable to be used on the colorbar
                         var_name=r'Orbital Period',  # name of the colorbar var
                         DF = Database,  # database
-                        DF_name=databaseName,
+                        DF_name=DataFrame_Name,
                         LogVar = True,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
-                        Star_Radius= Star_R,
+                        Star_Radius = Star_R,
                         fileName='orbital_period',
-                        palette = palette)
+                        palette = palette,
+                        showGraph=False)
     
     color_map_HR_bokeh (variable='orbital_period',  # variable to be used on the colorbar
                         var_name=r'Orbital Period',  # name of the colorbar var
                         DF = Database,  # database
-                        DF_name=databaseName,
+                        DF_name=DataFrame_Name,
                         LogVar = True,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
                         fileName='orbital_period_dynmR',
-                        palette = palette)
+                        palette = palette,
+                        showGraph=False)
     
     color_map_HR_bokeh (variable='eccentricity',  # variable to be used on the colorbar
                         var_name=r'Eccentricity',  # name of the colorbar var
                         DF = Database,  # database
-                        DF_name=databaseName,
+                        DF_name=DataFrame_Name,
                         LogVar = False,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
                         Star_Radius= Star_R,
                         fileName='eccentricity',
-                        palette = palette)
+                        palette = palette,
+                        showGraph=False)
     
     color_map_HR_bokeh (variable='eccentricity',  # variable to be used on the colorbar
                         var_name=r'Eccentricity',  # name of the colorbar var
                         DF = Database,  # database
-                        DF_name=databaseName,
+                        DF_name=DataFrame_Name,
                         LogVar = False,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
                         fileName='eccentricity_dynmR',
-                        palette = palette)
+                        palette = palette,
+                        showGraph=False)
     
     color_map_HR_bokeh (variable='lg_mtransfer_rate',  # variable to be used on the colorbar
                         var_name=r'Mass Transfer Rate \[M_{\odot}/y\]',  # name of the colorbar var
                         DF = Database,  # database
-                        DF_name=databaseName,
+                        DF_name=DataFrame_Name,
                         LogVar = True,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
                         Star_Radius= Star_R,
                         fileName='lg_mtransfer_rate',
-                        palette = palette)
+                        palette = palette,
+                        showGraph=False)
     
     color_map_HR_bokeh (variable='lg_mtransfer_rate',  # variable to be used on the colorbar
                         var_name=r'Mass Transfer Rate \[M_{\odot}/y\]',  # name of the colorbar var
                         DF = Database,  # database
-                        DF_name=databaseName,
+                        DF_name=DataFrame_Name,
                         LogVar = True,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
                         fileName='lg_mtransfer_rate_dynmR',
-                        palette = palette)
+                        palette = palette,
+                        showGraph=False)
     
     color_map_HR_bokeh (variable='S2_surface_h1',  # variable to be used on the colorbar
                         var_name=r'Star Two Surface Hydrogen [%]',  # name of the colorbar var
                         DF = Database,  # database
-                        DF_name=databaseName,
+                        DF_name=DataFrame_Name,
                         LogVar = False,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
                         Star_Radius = Star_R,
                         fileName='S2_surface_h1',
-                        palette = palette), # type: ignore
+                        palette = palette,
+                        showGraph=False), # type: ignore
     
     color_map_HR_bokeh (variable='S2_surface_h1',  # variable to be used on the colorbar
                         var_name=r'Star Two Surface Hydrogen [%]',  # name of the colorbar var
                         DF = Database,  # database
-                        DF_name=databaseName,
+                        DF_name=DataFrame_Name,
                         LogVar = False,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
                         fileName='S2_surface_h1_dynmR',
-                        palette = palette), # type: ignore
+                        palette = palette,
+                        showGraph=False), # type: ignore
     
     color_map_HR_bokeh (variable='S2_surface_he4',  # variable to be used on the colorbar
                         var_name=r'Star Two Surface Helium [%]',  # name of the colorbar var
                         DF = Database,  # database
-                        DF_name=databaseName,
+                        DF_name=DataFrame_Name,
                         LogVar = False,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
                         Star_Radius= Star_R,
                         fileName= 'S2_surface_he4',
-                        palette = palette)
+                        palette = palette,
+                        showGraph=False)
     
     color_map_HR_bokeh (variable='S2_surface_he4',  # variable to be used on the colorbar
                         var_name=r'Star Two Surface Helium [%]',  # name of the colorbar var
                         DF = Database,  # database
-                        DF_name=databaseName,
+                        DF_name=DataFrame_Name,
                         LogVar = False,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
                         fileName= 'S2_surface_he4_dynmR',
-                        palette = palette)
+                        palette = palette,
+                        showGraph=False)
     
     if Fopen == True:
         webbrowser.open(ViewerSaveLocation.resolve().as_uri())
