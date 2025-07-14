@@ -19,35 +19,39 @@ from PIL import Image
 
 # function for making HR diagrams using POSYDON data
 
-def color_map_HR (DF, # pandas dataframe 
-                  DF_name, # name of the pandas DF. ex. a dataframe named XBs -> DF_name = "X-ray Binaries". This is used for automatic filename generation
-                  Star = 2, # which star to actually graph in the binary
-                  variable = 'S1_mass', # variable to be used on the colorbar
-                  var_name = 'default', # name of the colorbar var
-                  LogVar = False, # whether or not to Log10 the var used for the colarbar 
-                  title = 'default', #title of graph
-                  saveLoc = '', #save location of graph
+def color_map_HR   (DF,  # Pandas dataframe to used 
+                    DF_name, # name of the Dataframe, this will be used for automatic title and filename generation.
+                    Star = 2, # which star, 1 or 2, of the POSYDON DF to graph
 
+                    variable='S1_mass',  # variable to be used on the colorbar
+                    var_name='default',  # name of the colorbar var
+                    LogVar = False,  # whether or not to Log10 the var used for the colorbar. for example, one would need to log10 orbital period in order for it to be readable
 
-                  Star_Radius = True,  # Boolean val. If not set to True, must input a val for the star radius whether or not to automatically use the star reference. ex. Star_Radius = 4
-                  style = 'default', #graph style, standard plt ones 
-                  fileName ='Default', #filename, if set to default one is autogened
-                  dpi = 200,
-                  showGraph= False, #whether or not to display graph in-line
- 
-                  ylimit = True, # whether or not to use a set range or autogen
-                  minR = 1.5, # min y bounds on graph
-                  maxR = 6.5, # max y bounds on graph
+                    title='default',  # title of graph. if let to default it will automatically populate one based on input conditions
+                    saveLoc='',  # filepath save location of graph
+                    Star_Radius = True,  # T/F. If set to true automatically calculates the size of the graphed point based off of the radius of the star. If NOT set to True, must input a val for the star radius ex. Star_Radius = 4
+                    fileName='Default',  # filename, if left to default one is autogened based on graphing vars
+                    showGraph= True, # whether or not to output the graph inline. this is very useful to disable when generating repetable graphs that are being used for something else, as it prevents bloat. for example, figs for a LaTeX paper. 
+                    palette = 'Default', #what pallete to use. this can be useful in somes cases where the plotted stars have colors similar to the white BG. 
+                    style = 'default', # what graph style to use from the PLT selection
+                    dpi = 200, # dpi/res to use
 
-                  #reference star graphing
-                  referenceStar = False, # T/F, whether or not to reference point to graph
-                  referenceStarRange = False, # T/F whether or not to graph an error range for the reference point
-                  exampleLum = 0, # ref points lum. NOT LOGGED
-                  exampleTemp = 0, # ref points temp. NOT LOGGED
-                  exampleTempMin = 0, 
-                  exampleTempMax = 0, 
-                  exampleLumMin = 0, 
-                  exampleLumMax = 0): # graph res
+                    # y-limits
+                    # this may not be needed entirely? very few cases where you'd want y-lims and wouldnt just be focused on the loaded DF
+                    ylimit=False,  # whether or not to use a set range or automatically fit one 
+                    minR=1.5,  # min Y limit on graph
+                    maxR=6.5,  # max y limit on graph
+
+                    # reference star graphing logic
+                    referenceStar=False,  # T/F, whether or not to reference point to graph
+                    referenceStarName = 'Reference Star', # name of the reference star. ex. v404 Cygni 
+                    referenceStarRange=False,  # T/F whether or not to graph an error range for the reference point
+                    exampleLum=0,  # ref points lum. NOT LOGGED
+                    exampleTemp=0,  # ref points temp. NOT LOGGED
+                    exampleTempMin=0,
+                    exampleTempMax=0,
+                    exampleLumMin=0,
+                    exampleLumMax=0):
     
     plt.style.use(style) #graph style
     fig, ax = plt.subplots(figsize = (8,8))  # create figure and axis
@@ -162,13 +166,12 @@ def color_map_HR_bokeh (DF,  # Pandas dataframe to used
 
                         title='default',  # title of graph. if let to default it will automatically populate one based on input conditions
                         saveLoc='',  # filepath save location of graph
-                        Star_Radius= True,  # true OR VALUE. If not set to T, must input a val for the star radius
-                        fileName='Default',  # filename, if set to default one is autogened
+                        Star_Radius = True,  # T/F. If set to true automatically calculates the size of the graphed point based off of the radius of the star. If NOT set to True, must input a val for the star radius ex. Star_Radius = 4
+                        fileName='Default',  # filename, if left to default one is autogened based on graphing vars
                         showGraph= True, # whether or not to output the graph inline. this is very useful to disable when generating repetable graphs that are being used for something else, as it prevents bloat. for example, figs for a LaTeX paper. 
-                        palette = 'Default',
+                        palette = 'Default', #what pallete to use. this can be useful in somes cases where the plotted stars have colors similar to the white BG. 
 
                         # y-limits
-
                         # this may not be needed entirely? very few cases where you'd want y-lims and wouldnt just be focused on the loaded DF
                         ylimit=False,  # whether or not to use a set range or automatically fit one 
                         minR=1.5,  # min Y limit on graph
@@ -430,7 +433,7 @@ def HR_Diagram_Bokeh_Sample_Grapher(Database,
  
     os.makedirs(GraphSaveLocation, exist_ok=True)
 
-    #making the html viewer for the graphs
+    # making the html viewer for the graphs
     ViewerHTML = f"""<!DOCTYPE html>
     <html lang="en">
     <head>
