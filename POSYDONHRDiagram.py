@@ -19,7 +19,7 @@ from PIL import Image
 
 # function for making HR diagrams using POSYDON data
 
-def color_map_HR   (DF,  # Pandas dataframe to used 
+def POSYDON_color_map_HR   (DF,  # Pandas dataframe to used 
                     DF_name, # name of the Dataframe, this will be used for automatic title and filename generation.
                     Star = 2, # which star, 1 or 2, of the POSYDON DF to graph
 
@@ -156,7 +156,7 @@ def color_map_HR   (DF,  # Pandas dataframe to used
     plt.close()
 
 
-def color_map_HR_bokeh (DF,  # Pandas dataframe to used 
+def POSYDON_color_map_HR_bokeh (DF,  # Pandas dataframe to used 
                         DF_name, # name of the Dataframe, this will be used for automatic title and filename generation.
                         Star = 2, # which star, 1 or 2, of the POSYDON DF to graph
 
@@ -415,7 +415,7 @@ def color_map_HR_bokeh (DF,  # Pandas dataframe to used
     # if showGraph== True: 
     #     webbrowser.open(save_path.resolve().as_uri())
 
-def HR_Diagram_Bokeh_Sample_Grapher(Database, 
+def POSYDON_HR_Diagram_Bokeh_Sample(Database, 
                                     DataFrame_Name, 
                                     Star_R = True, 
                                     SaveLocation = 'default', 
@@ -650,3 +650,4 @@ def HR_Diagram_Bokeh_Sample_Grapher(Database,
     
     if Fopen == True:
         webbrowser.open(ViewerSaveLocation.resolve().as_uri())
+
