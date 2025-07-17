@@ -403,17 +403,13 @@ def POSYDON_color_map_HR_bokeh (DF,  # Pandas dataframe to used
 
     fileName = fileName if fileName.endswith('.html') else f"{fileName}.html"
     
+    # some great funky logic to allow for stuff to work, typically one would call output_file(savepath, blah blah blah), but that permantly overwrites the functionality of show(p), which sucks. the save function prevent this 
+
     if showGraph == True:
         show(p)
-    save(p)
 
     save_path = Path(saveLoc) / fileName
-    output_file(save_path)
-
-
-
-    # if showGraph== True: 
-    #     webbrowser.open(save_path.resolve().as_uri())
+    save(p, filename=str(save_path), title=title)
 
 def POSYDON_HR_Diagram_Bokeh_Sample(Database, 
                                     DataFrame_Name, 
