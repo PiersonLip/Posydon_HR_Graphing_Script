@@ -19,4 +19,4 @@ I plan to implement some general functionality for single star systems. If you h
 ## Note  
 As this is implemented only with respect to POSYDON, it will not work with other binary datasets unless the column headers match POSYDON formatting.
 
-Additionally, this has NOT been extensively tested and other datasets may have edge cases which break things. This is still a WIP and written by a second-year undergrad, so expect dumb code mistakes and oversights.
+Additionally, this has NOT been extensively tested, and other datasets may have edge cases which break things. This is still a WIP and written by a second-year undergrad, so expect dumb code mistakes and oversights.

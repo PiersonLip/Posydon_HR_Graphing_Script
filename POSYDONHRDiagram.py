@@ -482,7 +482,7 @@ def POSYDON_HR_Diagram_Bokeh_Sample(Database,
         file.write(ViewerHTML)
     
 
-    color_map_HR_bokeh (variable='S1_mass',  # variable to be used on the colorbar
+   POSYDON_color_map_HR_bokeh (variable='S1_mass',  # variable to be used on the colorbar
                         var_name=r'Star One Mass [$$M_{\odot}$$]',  # name of the colorbar var
                         DF = Database,  # database
                         DF_name=DataFrame_Name,
@@ -494,7 +494,7 @@ def POSYDON_HR_Diagram_Bokeh_Sample(Database,
                         palette = palette,
                         showGraph=False), # type: ignore
     
-    color_map_HR_bokeh (variable='S1_mass',  # variable to be used on the colorbar
+   POSYDON_color_map_HR_bokeh (variable='S1_mass',  # variable to be used on the colorbar
                         var_name=r'Star One Mass [$$M_{\odot}$$]',  # name of the colorbar var
                         DF = Database,  # database
                         DF_name=DataFrame_Name,
@@ -506,7 +506,7 @@ def POSYDON_HR_Diagram_Bokeh_Sample(Database,
                         showGraph=False), # type: ignore
                         
 
-    color_map_HR_bokeh (variable='S2_mass',  # variable to be used on the colorbar
+   POSYDON_color_map_HR_bokeh (variable='S2_mass',  # variable to be used on the colorbar
                         var_name=r'Star Two Mass [$$M_{\odot}$$]',  # name of the colorbar var
                         DF = Database,  # database
                         DF_name=DataFrame_Name,
@@ -518,7 +518,7 @@ def POSYDON_HR_Diagram_Bokeh_Sample(Database,
                         palette = palette,
                         showGraph=False)
     
-    color_map_HR_bokeh (variable='S2_mass',  # variable to be used on the colorbar
+   POSYDON_color_map_HR_bokeh (variable='S2_mass',  # variable to be used on the colorbar
                         var_name=r'Star Two Mass [$$M_{\odot}$$]',  # name of the colorbar var
                         DF = Database,  # database
                         DF_name=DataFrame_Name,
@@ -529,7 +529,7 @@ def POSYDON_HR_Diagram_Bokeh_Sample(Database,
                         palette = palette,
                         showGraph=False)
     
-    color_map_HR_bokeh (variable='orbital_period',  # variable to be used on the colorbar
+   POSYDON_color_map_HR_bokeh (variable='orbital_period',  # variable to be used on the colorbar
                         var_name=r'Orbital Period',  # name of the colorbar var
                         DF = Database,  # database
                         DF_name=DataFrame_Name,
@@ -541,7 +541,7 @@ def POSYDON_HR_Diagram_Bokeh_Sample(Database,
                         palette = palette,
                         showGraph=False)
     
-    color_map_HR_bokeh (variable='orbital_period',  # variable to be used on the colorbar
+   POSYDON_color_map_HR_bokeh (variable='orbital_period',  # variable to be used on the colorbar
                         var_name=r'Orbital Period',  # name of the colorbar var
                         DF = Database,  # database
                         DF_name=DataFrame_Name,
@@ -552,7 +552,7 @@ def POSYDON_HR_Diagram_Bokeh_Sample(Database,
                         palette = palette,
                         showGraph=False)
     
-    color_map_HR_bokeh (variable='eccentricity',  # variable to be used on the colorbar
+   POSYDON_color_map_HR_bokeh (variable='eccentricity',  # variable to be used on the colorbar
                         var_name=r'Eccentricity',  # name of the colorbar var
                         DF = Database,  # database
                         DF_name=DataFrame_Name,
@@ -564,7 +564,7 @@ def POSYDON_HR_Diagram_Bokeh_Sample(Database,
                         palette = palette,
                         showGraph=False)
     
-    color_map_HR_bokeh (variable='eccentricity',  # variable to be used on the colorbar
+   POSYDON_color_map_HR_bokeh (variable='eccentricity',  # variable to be used on the colorbar
                         var_name=r'Eccentricity',  # name of the colorbar var
                         DF = Database,  # database
                         DF_name=DataFrame_Name,
@@ -575,7 +575,7 @@ def POSYDON_HR_Diagram_Bokeh_Sample(Database,
                         palette = palette,
                         showGraph=False)
     
-    color_map_HR_bokeh (variable='lg_mtransfer_rate',  # variable to be used on the colorbar
+   POSYDON_color_map_HR_bokeh (variable='lg_mtransfer_rate',  # variable to be used on the colorbar
                         var_name=r'Mass Transfer Rate \[M_{\odot}/y\]',  # name of the colorbar var
                         DF = Database,  # database
                         DF_name=DataFrame_Name,
@@ -587,7 +587,7 @@ def POSYDON_HR_Diagram_Bokeh_Sample(Database,
                         palette = palette,
                         showGraph=False)
     
-    color_map_HR_bokeh (variable='lg_mtransfer_rate',  # variable to be used on the colorbar
+   POSYDON_color_map_HR_bokeh (variable='lg_mtransfer_rate',  # variable to be used on the colorbar
                         var_name=r'Mass Transfer Rate \[M_{\odot}/y\]',  # name of the colorbar var
                         DF = Database,  # database
                         DF_name=DataFrame_Name,
@@ -598,7 +598,7 @@ def POSYDON_HR_Diagram_Bokeh_Sample(Database,
                         palette = palette,
                         showGraph=False)
     
-    color_map_HR_bokeh (variable='S2_surface_h1',  # variable to be used on the colorbar
+   POSYDON_color_map_HR_bokeh (variable='S2_surface_h1',  # variable to be used on the colorbar
                         var_name=r'Star Two Surface Hydrogen [%]',  # name of the colorbar var
                         DF = Database,  # database
                         DF_name=DataFrame_Name,
@@ -610,7 +610,7 @@ def POSYDON_HR_Diagram_Bokeh_Sample(Database,
                         palette = palette,
                         showGraph=False), # type: ignore
     
-    color_map_HR_bokeh (variable='S2_surface_h1',  # variable to be used on the colorbar
+   POSYDON_color_map_HR_bokeh (variable='S2_surface_h1',  # variable to be used on the colorbar
                         var_name=r'Star Two Surface Hydrogen [%]',  # name of the colorbar var
                         DF = Database,  # database
                         DF_name=DataFrame_Name,
@@ -621,7 +621,7 @@ def POSYDON_HR_Diagram_Bokeh_Sample(Database,
                         palette = palette,
                         showGraph=False), # type: ignore
     
-    color_map_HR_bokeh (variable='S2_surface_he4',  # variable to be used on the colorbar
+   POSYDON_color_map_HR_bokeh (variable='S2_surface_he4',  # variable to be used on the colorbar
                         var_name=r'Star Two Surface Helium [%]',  # name of the colorbar var
                         DF = Database,  # database
                         DF_name=DataFrame_Name,
@@ -633,7 +633,7 @@ def POSYDON_HR_Diagram_Bokeh_Sample(Database,
                         palette = palette,
                         showGraph=False)
     
-    color_map_HR_bokeh (variable='S2_surface_he4',  # variable to be used on the colorbar
+   POSYDON_color_map_HR_bokeh (variable='S2_surface_he4',  # variable to be used on the colorbar
                         var_name=r'Star Two Surface Helium [%]',  # name of the colorbar var
                         DF = Database,  # database
                         DF_name=DataFrame_Name,
