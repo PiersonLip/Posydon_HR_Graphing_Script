@@ -1,3 +1,5 @@
+# [Example](https://piersonlip.github.io/Posydon_HR_Graphing_Script/)
+
 # A script for generating paper-ready HR diagrams of POSYDON datasets.
 
 ## Intro  
