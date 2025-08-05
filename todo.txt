@@ -1,0 +1,5 @@
+Goals:
+    - Implement some sort of system that allows a user to import a finished POSYDON grid and then get a "summary"/visualization of it. 
+        - HR of init ZAMS
+        - HR of end state
+        - logic to prevent Bokeh from graphing too many system, some sort of nice random sampling logic if the qty of stars is over something like 10k (requires testing)
