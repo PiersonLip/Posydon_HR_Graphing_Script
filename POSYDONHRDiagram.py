@@ -10,6 +10,8 @@ from bokeh.transform import linear_cmap, log_cmap
 from bokeh.palettes import RdYlBu11
 from bokeh.palettes import interp_palette
 from bokeh.io import output_notebook
+from bokeh.embed import file_html
+from bokeh.resources import CDN
 
 import inspect
 import os
@@ -403,13 +405,29 @@ def POSYDON_color_map_HR_bokeh (DF,  # Pandas dataframe to used
 
     fileName = fileName if fileName.endswith('.html') else f"{fileName}.html"
     
-    # some great funky logic to allow for stuff to work, typically one would call output_file(savepath, blah blah blah), but that permantly overwrites the functionality of show(p), which sucks. the save function prevent this 
-
+    # FIXED!!
+    # some great funky logic to allow for stuff to work, typically one would call output_file(savepath, blah blah blah), but that permantly overwrites the functionality of show(p), which sucks. the save function prevent this.
+    # are you kidding me?? this logic works on windows totally fine (least on my win10 machine) but on linux doesnt??
+    # 
+    # save_path = Path(saveLoc) / fileName
+    # save(p, filename=str(save_path), title=title)
+    
+    # if showGraph == True:
+    #     show(p)
+    # FIXED!!
+    # 
+    # This is technically equivlent to whats above but iwht a little less control. For some bizzaro reason bokeh freaks out if you display in-line and try and save. probably doing something wrong, but hey, what is below works, thank you chatgpt (this might have some horrid side effect)
+    
     if showGraph == True:
         show(p)
 
+    html = file_html(p, CDN, title)
     save_path = Path(saveLoc) / fileName
-    save(p, filename=str(save_path), title=title)
+    with open(save_path, "w") as f:
+        f.write(html)
+
+
+
 
 def POSYDON_HR_Diagram_Bokeh_Sample(Database, 
                                     DataFrame_Name, 
