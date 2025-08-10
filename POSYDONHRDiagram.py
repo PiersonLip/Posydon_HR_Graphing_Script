@@ -141,7 +141,7 @@ def POSYDON_color_map_HR   (DF,  # Pandas dataframe to used
             DF_name,
             variable,
             'log10' if LogVar == True else 'linear',
-            Star_Radius if Star_Radius != True else 'dynR'
+            str(Star_Radius) if Star_Radius != True else 'dynR'
         ]
         fileName = '_'.join(file_parts) + '.png'
         fileName = fileName.replace(" ", "_")
@@ -436,7 +436,6 @@ def POSYDON_HR_Diagram_Bokeh_Sample(Database,
                                     palette = 'Default', 
                                     Fopen = True):
 
-
     #file location saving logic
     if SaveLocation == 'default':
         GraphSaveLocation = Path().resolve() / 'Sampler' / DataFrame_Name.replace(" ", "_") / 'graphs'
@@ -661,7 +660,11 @@ def POSYDON_HR_Diagram_Bokeh_Sample(Database,
                         fileName= 'S2_surface_he4_dynmR',
                         palette = palette,
                         showGraph=False)
+    print(ViewerSaveLocation)
     
     if Fopen == True:
-        webbrowser.open(ViewerSaveLocation.resolve().as_uri())
+        try:
+            webbrowser.open(ViewerSaveLocation.resolve().as_uri())
+        except:
+            print('cannot open in browser!!')
 

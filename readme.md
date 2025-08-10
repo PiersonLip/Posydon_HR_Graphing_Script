@@ -17,6 +17,6 @@ The module allows the user to generate Bokeh or POSYDON graphs with nearly ident
 I plan to implement some general functionality for single star systems. If you have any other ideas for functionality, please feel free to suggest them, make a pull request, etc.
 
 ## Note  
-As this is implemented only with respect to POSYDON, it will not work with other binary datasets unless the column headers match POSYDON formatting.
+As this is implemented only with respect to POSYDON, it will not work with other binary datasets.
 
 Additionally, this has NOT been extensively tested, and other datasets may have edge cases which break things. This is still a WIP and written by a second-year undergrad, so expect dumb code mistakes and oversights.
