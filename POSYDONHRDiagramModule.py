@@ -23,7 +23,9 @@ from PIL import Image
 
     
 # function for making HR diagrams using POSYDON data
-def HR_Diagram  (DF,  # Pandas dataframe to used 
+def HR_Diagram     (DF,  # Pandas dataframe to used 
+                    path,
+                    state,
                     DF_name, # name of the Dataframe, this will be used for automatic title and filename generation.
                     Star = 2, # which star, 1 or 2, of the POSYDON DF to graph
 
@@ -57,6 +59,8 @@ def HR_Diagram  (DF,  # Pandas dataframe to used
                     exampleLumMin=0,
                     exampleLumMax=0, 
                     grapher = 'plt'):
+    
+    
     if grapher == 'plt':
     
         plt.style.use(style) #graph style
