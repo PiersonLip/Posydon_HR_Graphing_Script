@@ -1,4 +1,3 @@
 Goals:
     - Implement some sort of system that allows a user to import a finished POSYDON grid and then get a "summary"/visualization of it. 
-        - HR of init ZAMS
-        - HR of end state
+        - HR of init ZAMS. No radius provided?? no way to interp temp??

@@ -17,7 +17,7 @@ import inspect
 import os
 import webbrowser
 
-def loadEndData(dataset, path =''):
+def loadEndStateData(dataset, path =''):
     filterDF = pd.DataFrame()
 
     chunksize = 10 ** 6
@@ -567,7 +567,8 @@ def HR_Sampler (Database,
                         Star_Radius = Star_R,
                         fileName='S2_mass',
                         palette = palette,
-                        showGraph=False)
+                        showGraph=False,
+                        grapher='bokeh')
     
     HR_Diagram (variable='S2_mass',  # variable to be used on the colorbar
                         var_name=r'Star Two Mass \[M_{\odot}/y\]',  # name of the colorbar var
@@ -578,7 +579,8 @@ def HR_Sampler (Database,
                         saveLoc=GraphSaveLocation,  # save location of graph
                         fileName='S2_mass_dynmR',
                         palette = palette,
-                        showGraph=False)
+                        showGraph=False,
+                        grapher='bokeh')
     
     HR_Diagram (variable='orbital_period',  # variable to be used on the colorbar
                         var_name=r'Orbital Period',  # name of the colorbar var
@@ -590,7 +592,8 @@ def HR_Sampler (Database,
                         Star_Radius = Star_R,
                         fileName='orbital_period',
                         palette = palette,
-                        showGraph=False)
+                        showGraph=False,
+                        grapher='bokeh')
     
     HR_Diagram (variable='orbital_period',  # variable to be used on the colorbar
                         var_name=r'Orbital Period',  # name of the colorbar var
@@ -601,7 +604,8 @@ def HR_Sampler (Database,
                         saveLoc=GraphSaveLocation,  # save location of graph
                         fileName='orbital_period_dynmR',
                         palette = palette,
-                        showGraph=False)
+                        showGraph=False,
+                        grapher='bokeh')
     
     HR_Diagram (variable='eccentricity',  # variable to be used on the colorbar
                         var_name=r'Eccentricity',  # name of the colorbar var
@@ -613,7 +617,8 @@ def HR_Sampler (Database,
                         Star_Radius= Star_R,
                         fileName='eccentricity',
                         palette = palette,
-                        showGraph=False)
+                        showGraph=False,
+                        grapher='bokeh')
     
     HR_Diagram (variable='eccentricity',  # variable to be used on the colorbar
                         var_name=r'Eccentricity',  # name of the colorbar var
@@ -624,7 +629,8 @@ def HR_Sampler (Database,
                         saveLoc=GraphSaveLocation,  # save location of graph
                         fileName='eccentricity_dynmR',
                         palette = palette,
-                        showGraph=False)
+                        showGraph=False,
+                        grapher='bokeh')
     
     HR_Diagram (variable='lg_mtransfer_rate',  # variable to be used on the colorbar
                         var_name=r'Mass Transfer Rate \[M_{\odot}/y\]',  # name of the colorbar var
@@ -636,7 +642,8 @@ def HR_Sampler (Database,
                         Star_Radius= Star_R,
                         fileName='lg_mtransfer_rate',
                         palette = palette,
-                        showGraph=False)
+                        showGraph=False,
+                        grapher='bokeh')
     
     HR_Diagram (variable='lg_mtransfer_rate',  # variable to be used on the colorbar
                         var_name=r'Mass Transfer Rate \[M_{\odot}/y\]',  # name of the colorbar var
@@ -647,7 +654,8 @@ def HR_Sampler (Database,
                         saveLoc=GraphSaveLocation,  # save location of graph
                         fileName='lg_mtransfer_rate_dynmR',
                         palette = palette,
-                        showGraph=False)
+                        showGraph=False,
+                        grapher='bokeh')
     
     HR_Diagram (variable='S2_surface_h1',  # variable to be used on the colorbar
                         var_name=r'Star Two Surface Hydrogen [%]',  # name of the colorbar var
@@ -659,7 +667,8 @@ def HR_Sampler (Database,
                         Star_Radius = Star_R,
                         fileName='S2_surface_h1',
                         palette = palette,
-                        showGraph=False), # type: ignore
+                        showGraph=False,
+                        grapher='bokeh'), # type: ignore
     
     HR_Diagram (variable='S2_surface_h1',  # variable to be used on the colorbar
                         var_name=r'Star Two Surface Hydrogen [%]',  # name of the colorbar var
@@ -670,7 +679,8 @@ def HR_Sampler (Database,
                         saveLoc=GraphSaveLocation,  # save location of graph
                         fileName='S2_surface_h1_dynmR',
                         palette = palette,
-                        showGraph=False), # type: ignore
+                        showGraph=False,
+                        grapher='bokeh'), # type: ignore
     
     HR_Diagram (variable='S2_surface_he4',  # variable to be used on the colorbar
                         var_name=r'Star Two Surface Helium [%]',  # name of the colorbar var
@@ -682,7 +692,8 @@ def HR_Sampler (Database,
                         Star_Radius= Star_R,
                         fileName= 'S2_surface_he4',
                         palette = palette,
-                        showGraph=False)
+                        showGraph=False,
+                        grapher='bokeh')
     
     HR_Diagram (variable='S2_surface_he4',  # variable to be used on the colorbar
                         var_name=r'Star Two Surface Helium [%]',  # name of the colorbar var
@@ -693,7 +704,8 @@ def HR_Sampler (Database,
                         saveLoc=GraphSaveLocation,  # save location of graph
                         fileName= 'S2_surface_he4_dynmR',
                         palette = palette,
-                        showGraph=False)
+                        showGraph=False,
+                        grapher='bokeh')
     
     if Fopen == True:
         webbrowser.open(ViewerSaveLocation.resolve().as_uri())
