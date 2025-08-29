@@ -1,3 +1,5 @@
 Goals:
     - Implement some sort of system that allows a user to import a finished POSYDON grid and then get a "summary"/visualization of it. 
         - HR of init ZAMS. No radius provided?? no way to interp temp??
+        - Maybe try to work into the actual main posyodn release? gotta figure out what "plot pop" does lol
+        - fix ref point graphing when using bokeh instead of plt
