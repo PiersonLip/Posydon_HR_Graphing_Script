@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "posydon-hr-diagram"
+version = "0.1.0"
+description = "HR diagram tools for POSYDON datasets"
+readme = "readme.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "Pierson Lipschultz" }
+]
+
+# These are the libs your module imports
+dependencies = [
+  "numpy",
+  "pandas",
+  "matplotlib",
+  "bokeh",
+]
+
+# This tells setuptools to install JUST the single .py file
+[tool.setuptools]
+py-modules = ["POSYDONHRDiagramModule"]
