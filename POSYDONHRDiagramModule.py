@@ -249,7 +249,7 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
         # generating temp and lum data based on if star 1 or 2 is being used. note this does not have proper protection logic currently and needs a way of dropping NaN values
         if Star == 2:
             if Star_Radius == True:
-                r_dot= 4 ** df['S2_log_R'] + 1 # get star radius from df. the +1 is to prevent radius values of 0... which is fine cause its all relative anyway
+                r_dot= 4 ** df[S2_log_R] + 1 # get star radius from df. the +1 is to prevent radius values of 0... which is fine cause its all relative anyway
             else:
                 if isinstance(Star_Radius, int): # check if Star_Radius is a float, and if so, set the r_dot to it. 
                     r_dot = float(Star_Radius) 
