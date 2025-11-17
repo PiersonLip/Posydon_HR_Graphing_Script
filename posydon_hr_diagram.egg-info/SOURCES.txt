@@ -1,0 +1,8 @@
+POSYDONHRDiagramModule.py
+pyproject.toml
+readme.md
+posydon_hr_diagram.egg-info/PKG-INFO
+posydon_hr_diagram.egg-info/SOURCES.txt
+posydon_hr_diagram.egg-info/dependency_links.txt
+posydon_hr_diagram.egg-info/requires.txt
+posydon_hr_diagram.egg-info/top_level.txt

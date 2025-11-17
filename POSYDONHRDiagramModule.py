@@ -18,7 +18,7 @@ import os
 import webbrowser
 
 def loadEndStateData(dataset, path =''):
-    filterDF = pd.DataFrame()
+    filterdf = pd.DataFrame()
 
     chunksize = 10 ** 6
     if path == '':
@@ -28,8 +28,8 @@ def loadEndStateData(dataset, path =''):
             stateCon = chunk['state'] != 'merged' 
             filtChunk = chunk[endCon & stateCon]
 
-            filterDF = pd.concat([filterDF, filtChunk])
-        return filterDF
+            filterdf = pd.concat([filterdf, filtChunk])
+        return filterdf
     else:
         for chunk in pd.read_hdf(path / dataset, key = 'history', chunksize=chunksize):
             # chunk is a DataFrame. To "process" the rows in the chunk:
@@ -37,38 +37,40 @@ def loadEndStateData(dataset, path =''):
             stateCon = chunk['state'] != 'merged' 
             filtChunk = chunk[endCon & stateCon]
 
-            filterDF = pd.concat([filterDF, filtChunk])
-        return filterDF
+            filterdf = pd.concat([filterdf, filtChunk])
+        return filterdf
     
-# def loadZamsData(dataset, path =''):
-#     filterDF = pd.DataFrame()
+def loadZamsData(dataset, path =''):
+    filterdf = pd.DataFrame()
 
-#     chunksize = 10 ** 6
-#     if path == '':
-#         for chunk in pd.read_hdf(dataset, key = 'history', chunksize=chunksize):
-#             # chunk is a DataFrame. To "process" the rows in the chunk:
-#             endCon = chunk['event'] == 'ZAMS'
-#             stateCon = chunk['state'] != 'merged' 
-#             filtChunk = chunk[endCon & stateCon]
+    chunksize = 10 ** 6
+    if path == '':
+        for chunk in pd.read_hdf(dataset, key = 'history', chunksize=chunksize):
+            # chunk is a DataFrame. To "process" the rows in the chunk:
+            endCon = chunk['event'] == 'ZAMS'
+            stateCon = chunk['state'] != 'merged' 
+            filtChunk = chunk[endCon & stateCon]
 
-#             filterDF = pd.concat([filterDF, filtChunk])
-#         return filterDF
-#     else:
-#         for chunk in pd.read_hdf(path / dataset, key = 'history', chunksize=chunksize):
-#             # chunk is a DataFrame. To "process" the rows in the chunk:
-#             endCon = chunk['event'] == 'ZAMS'
-#             stateCon = chunk['state'] != 'merged' 
-#             filtChunk = chunk[endCon & stateCon]
+            filterdf = pd.concat([filterdf, filtChunk])
+        return filterdf
+    else:
+        for chunk in pd.read_hdf(path / dataset, key = 'history', chunksize=chunksize):
+            # chunk is a DataFrame. To "process" the rows in the chunk:
+            endCon = chunk['event'] == 'ZAMS'
+            stateCon = chunk['state'] != 'merged' 
+            filtChunk = chunk[endCon & stateCon]
 
-#             filterDF = pd.concat([filterDF, filtChunk])
-#         return filterDF
+            filterdf = pd.concat([filterdf, filtChunk])
+        return filterdf
 
     
 # function for making HR diagrams using POSYDON data
-def HR_Diagram     (DF,  # Pandas dataframe to used (or H5). however, it is reccomeneded to load the DF into memory first to reduce reloading it everytime
-                    DF_name, # name of the Dataframe, this will be used for automatic title and filename generation.
+def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is reccomeneded to load the df into memory first to reduce reloading it everytime
+                    df_name, # name of the Dataframe, this will be used for automatic title and filename generation.
+                    history = True,
+                    init_or_final = 'final',
                     path = '',
-                    Star = 2, # which star, 1 or 2, of the POSYDON DF to graph
+                    Star = 2, # which star, 1 or 2, of the POSYDON df to graph
 
                     variable='S1_mass',  # variable to be used on the colorbar
                     var_name='default',  # name of the colorbar var
@@ -84,7 +86,7 @@ def HR_Diagram     (DF,  # Pandas dataframe to used (or H5). however, it is recc
                     dpi = 200, # dpi/res to use
 
                     # y-limits
-                    # this may not be needed entirely? very few cases where you'd want y-lims and wouldnt just be focused on the loaded DF
+                    # this may not be needed entirely? very few cases where you'd want y-lims and wouldnt just be focused on the loaded df
                     ylimit=False,  # whether or not to use a set range or automatically fit one 
                     minR=1.5,  # min Y limit on graph
                     maxR=6.5,  # max y limit on graph
@@ -101,8 +103,26 @@ def HR_Diagram     (DF,  # Pandas dataframe to used (or H5). however, it is recc
                     exampleLumMax=0, 
                     grapher = 'plt'):
 
+    if history == True:
+        S2_log_R = 'S2_log_R'
+        S2_log_L = 'S2_log_L'
+        S1_log_R = 'S1_log_R'
+        S1_log_L = 'S1_log_L'
+    elif init_or_final == 'init':
+        S2_log_R = 'S2_log_R_i'
+        S2_log_L = 'S2_log_L_i'
+        S1_log_R = 'S1_log_R_i'
+        S1_log_L = 'S1_log_L_i'
+    elif init_or_final == 'final':
+        S2_log_L = 'S2_log_L_f'
+        S2_log_L = 'S2_log_L_f'
+        S1_log_R = 'S1_log_R_f'
+        S2_log_R = 'S2_log_R_f'
+        S1_log_L = 'S1_log_L_f'
+    else:
+        print('not a valiv option for initOrFinal! options or "init" or "final"')
 
-    
+
     if grapher == 'plt':
     
         plt.style.use(style) #graph style
@@ -115,28 +135,28 @@ def HR_Diagram     (DF,  # Pandas dataframe to used (or H5). however, it is recc
         
         if Star == 2: # this logic is kinda horrid, revisit probably. and doesnt work! 
             if Star_Radius == True:
-                r_dot = 10 ** DF['S2_log_R']
+                r_dot = 10 ** df[S2_log_R]
             else:
                 r_dot = Star_Radius
 
             # assings axis
-            Temp = np.log10((((10 ** DF['S2_log_L'])/(10 ** DF['S2_log_R'])**2)**.25) * 5772)
-            Lum = DF['S2_log_L']
+            Temp = np.log10((((10 ** df[S2_log_L])/(10 ** df[S2_log_L])**2)**.25) * 5772)
+            Lum = df[S2_log_L]
         else: 
             if Star_Radius == True:
-                r_dot = 10 ** DF['S1_log_R']
+                r_dot = 10 ** df[S1_log_R]
             else:
                 r_dot = Star_Radius
 
             # assings axis
-            Temp = np.log10((((10 ** DF['S1_log_L'])/(10 ** DF['S1_log_R'])**2)**.25) * 5772)
-            Lum = DF['S1_log_L']
+            Temp = np.log10((((10 ** df[S1_log_L])/(10 ** df[S1_log_L])**2)**.25) * 5772)
+            Lum = df[S1_log_L]
 
         # binds the color of the scatter points to the x location (temp) of the star
         if LogVar == True:
-            c = np.log10(DF[variable])
+            c = np.log10(df[variable])
         else:
-            c = (DF[variable])
+            c = (df[variable])
         colors = c
 
         # labels
@@ -183,12 +203,12 @@ def HR_Diagram     (DF,  # Pandas dataframe to used (or H5). however, it is recc
 
         # Smart title if default
         if title == 'default':
-            title = f"HR Diagram of {DF_name} colored by {'log₁₀ ' if LogVar == True else ''}{var_name if var_name != 'default' else variable} with {'relative' if Star_Radius == True else f'radius={Star_Radius}'} point size"
+            title = f"HR Diagram of {df_name} colored by {'log₁₀ ' if LogVar == True else ''}{var_name if var_name != 'default' else variable} with {'relative' if Star_Radius == True else f'radius={Star_Radius}'} point size"
         ax.set_title(title)
         # Smart filename if default
         if fileName == 'Default':
             file_parts = [
-                DF_name,
+                df_name,
                 variable,
                 'log10' if LogVar == True else 'linear',
                 str(Star_Radius) if Star_Radius != True else 'dynR'
@@ -206,6 +226,10 @@ def HR_Diagram     (DF,  # Pandas dataframe to used (or H5). however, it is recc
         if showGraph== True:
             plt.show()
         plt.close()
+
+
+
+    ### Bokeh Graphing
     elif grapher == 'bokeh':
             # whether or not to output the graph to be inline
         if showGraph == True: 
@@ -220,7 +244,7 @@ def HR_Diagram     (DF,  # Pandas dataframe to used (or H5). however, it is recc
         # generating temp and lum data based on if star 1 or 2 is being used. note this does not have proper protection logic currently and needs a way of dropping NaN values
         if Star == 2:
             if Star_Radius == True:
-                r_dot= 4 ** DF['S2_log_R'] + 1 # get star radius from DF. the +1 is to prevent radius values of 0... which is fine cause its all relative anyway
+                r_dot= 4 ** df['S2_log_R'] + 1 # get star radius from df. the +1 is to prevent radius values of 0... which is fine cause its all relative anyway
             else:
                 if isinstance(Star_Radius, int): # check if Star_Radius is a float, and if so, set the r_dot to it. 
                     r_dot = float(Star_Radius) 
@@ -231,32 +255,32 @@ def HR_Diagram     (DF,  # Pandas dataframe to used (or H5). however, it is recc
 
             Temp = np.log10( #rearranged Stefan-Boltzmann equation for calculating Temp based off of lum and radius
                     (
-                        (10 ** DF['S2_log_L']) /
-                        (10 ** DF['S2_log_R']) ** 2
+                        (10 ** df['S2_log_L']) /
+                        (10 ** df['S2_log_R']) ** 2
                     ) ** 0.25
                     * 5772
                 ) 
-            Lum = DF['S2_log_L']
+            Lum = df['S2_log_L']
 
         else: 
             if Star_Radius == True:
-                r_dot= 4 ** DF['S1_log_R'] + 1
+                r_dot= 4 ** df['S1_log_R'] + 1
             else:
                 r_dot = float(Star_Radius)
 
             # Axis values
             Temp = np.log10( #rearranged Stefan-Boltzmann equation for calculating Temp based off of lum and radius
                     (
-                        (10 ** DF['S2_log_L']) /
-                        (10 ** DF['S2_log_R']) ** 2
+                        (10 ** df['S2_log_L']) /
+                        (10 ** df['S2_log_R']) ** 2
                     ) ** 0.25
                     * 5772
                 )
-            Lum = DF['S1_log_L']
+            Lum = df['S1_log_L']
 
         # Smart title gen. sorta rough to look at, but simple when boken down
         if title == 'default':
-            title = f"HR Diagram of {DF_name} colored by {'Log$$_{10}$$ ' if LogVar == True else ''}{var_name if var_name != 'default' else variable} with {'relative' if Star_Radius == True else f'radius={Star_Radius}'} point size "
+            title = f"HR Diagram of {df_name} colored by {'Log$$_{10}$$ ' if LogVar == True else ''}{var_name if var_name != 'default' else variable} with {'relative' if Star_Radius == True else f'radius={Star_Radius}'} point size "
         
         # check if colorVar is already logged to prevent "double logging"
         if variable.startswith('lg'):
@@ -265,14 +289,14 @@ def HR_Diagram     (DF,  # Pandas dataframe to used (or H5). however, it is recc
         # Color mapping    
         if LogVar == True: # yes this is slightly redundent, but this really makes sure that colordata isnt logged twice and is properly graphed
             if variable.startswith('lg'):
-                color_data = 10 ** DF[variable] #delog logged var for the LogColorMapper 🫠. this sounds insane, but this makes sure the colorbar shows values in proper 10^n format
+                color_data = 10 ** df[variable] #delog logged var for the LogColorMapper 🫠. this sounds insane, but this makes sure the colorbar shows values in proper 10^n format
             else:
-                color_data = (DF[variable])
+                color_data = (df[variable])
             color_label = f"Log$${10}$$ {var_name}"
             mapper = LogColorMapper(palette=smooth_palette, low= np.min(color_data), high=np.nanmax(color_data))
 
         else:
-            color_data = DF[variable]
+            color_data = df[variable]
             if var_name != 'default':
                 color_label = var_name
             else: color_label = variable
@@ -288,7 +312,7 @@ def HR_Diagram     (DF,  # Pandas dataframe to used (or H5). however, it is recc
         if isinstance(r_dot, (pd.Series, np.ndarray)):
             size_list = r_dot.tolist()
         else:
-            size_list = [r_dot] * len(DF)
+            size_list = [r_dot] * len(df)
 
         # Build the source dict for the figure. this includes both the standerd x/y cords and color vals
         source = ColumnDataSource(data=dict(
@@ -413,7 +437,7 @@ def HR_Diagram     (DF,  # Pandas dataframe to used (or H5). however, it is recc
         # Auto-generate filename if left to default
         if fileName == 'Default':
             file_parts = [
-                DF_name,
+                df_name,
                 variable,
                 'log10' if LogVar == True else 'linear',
                 'dynR' if Star_Radius == True else f'R{int(Star_Radius)}'
@@ -517,8 +541,8 @@ def HR_Sampler (Database,
         file.write(ViewerHTML)
     
     graphValues =  {
-        'DF' : Database, 
-        'DF_name': DataFrame_Name,
+        'df' : Database, 
+        'df_name': DataFrame_Name,
         'LogVar' : False, 
         'title': 'default',  
         'saveLoc': GraphSaveLocation, 
@@ -531,8 +555,8 @@ def HR_Sampler (Database,
     HR_Diagram         (variable='S1_mass',  # variable to be used on the colorbar
                         var_name=r'Star One Mass \[M_{\odot}/y\]',  # name of the colorbar var
                         fileName='S1_mass',
-                        DF = Database,  # database
-                        DF_name=DataFrame_Name,
+                        df = Database,  # database
+                        df_name=DataFrame_Name,
                         LogVar = False,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph 
@@ -546,8 +570,8 @@ def HR_Sampler (Database,
                 var_name=r'Star One Mass \[M_{\odot}/y\]',  # name of the colorbar var
                 fileName='S1_mass_dynmR',
                 
-                DF = Database,  # database
-                DF_name=DataFrame_Name,
+                df = Database,  # database
+                df_name=DataFrame_Name,
                 LogVar = False,  # whether or not to Log10 the var used for the colorbar
                 title='default',  # title of graph
                 saveLoc=GraphSaveLocation,  # save location of graph
@@ -559,8 +583,8 @@ def HR_Sampler (Database,
 
     HR_Diagram (variable='S2_mass',  # variable to be used on the colorbar
                         var_name=r'Star Two Mass \[M_{\odot}/y\]',  # name of the colorbar var
-                        DF = Database,  # database
-                        DF_name=DataFrame_Name,
+                        df = Database,  # database
+                        df_name=DataFrame_Name,
                         LogVar = False,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
@@ -572,8 +596,8 @@ def HR_Sampler (Database,
     
     HR_Diagram (variable='S2_mass',  # variable to be used on the colorbar
                         var_name=r'Star Two Mass \[M_{\odot}/y\]',  # name of the colorbar var
-                        DF = Database,  # database
-                        DF_name=DataFrame_Name,
+                        df = Database,  # database
+                        df_name=DataFrame_Name,
                         LogVar = False,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
@@ -584,8 +608,8 @@ def HR_Sampler (Database,
     
     HR_Diagram (variable='orbital_period',  # variable to be used on the colorbar
                         var_name=r'Orbital Period',  # name of the colorbar var
-                        DF = Database,  # database
-                        DF_name=DataFrame_Name,
+                        df = Database,  # database
+                        df_name=DataFrame_Name,
                         LogVar = True,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
@@ -597,8 +621,8 @@ def HR_Sampler (Database,
     
     HR_Diagram (variable='orbital_period',  # variable to be used on the colorbar
                         var_name=r'Orbital Period',  # name of the colorbar var
-                        DF = Database,  # database
-                        DF_name=DataFrame_Name,
+                        df = Database,  # database
+                        df_name=DataFrame_Name,
                         LogVar = True,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
@@ -609,8 +633,8 @@ def HR_Sampler (Database,
     
     HR_Diagram (variable='eccentricity',  # variable to be used on the colorbar
                         var_name=r'Eccentricity',  # name of the colorbar var
-                        DF = Database,  # database
-                        DF_name=DataFrame_Name,
+                        df = Database,  # database
+                        df_name=DataFrame_Name,
                         LogVar = False,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
@@ -622,8 +646,8 @@ def HR_Sampler (Database,
     
     HR_Diagram (variable='eccentricity',  # variable to be used on the colorbar
                         var_name=r'Eccentricity',  # name of the colorbar var
-                        DF = Database,  # database
-                        DF_name=DataFrame_Name,
+                        df = Database,  # database
+                        df_name=DataFrame_Name,
                         LogVar = False,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
@@ -634,8 +658,8 @@ def HR_Sampler (Database,
     
     HR_Diagram (variable='lg_mtransfer_rate',  # variable to be used on the colorbar
                         var_name=r'Mass Transfer Rate \[M_{\odot}/y\]',  # name of the colorbar var
-                        DF = Database,  # database
-                        DF_name=DataFrame_Name,
+                        df = Database,  # database
+                        df_name=DataFrame_Name,
                         LogVar = True,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
@@ -647,8 +671,8 @@ def HR_Sampler (Database,
     
     HR_Diagram (variable='lg_mtransfer_rate',  # variable to be used on the colorbar
                         var_name=r'Mass Transfer Rate \[M_{\odot}/y\]',  # name of the colorbar var
-                        DF = Database,  # database
-                        DF_name=DataFrame_Name,
+                        df = Database,  # database
+                        df_name=DataFrame_Name,
                         LogVar = True,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
@@ -659,8 +683,8 @@ def HR_Sampler (Database,
     
     HR_Diagram (variable='S2_surface_h1',  # variable to be used on the colorbar
                         var_name=r'Star Two Surface Hydrogen [%]',  # name of the colorbar var
-                        DF = Database,  # database
-                        DF_name=DataFrame_Name,
+                        df = Database,  # database
+                        df_name=DataFrame_Name,
                         LogVar = False,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
@@ -672,8 +696,8 @@ def HR_Sampler (Database,
     
     HR_Diagram (variable='S2_surface_h1',  # variable to be used on the colorbar
                         var_name=r'Star Two Surface Hydrogen [%]',  # name of the colorbar var
-                        DF = Database,  # database
-                        DF_name=DataFrame_Name,
+                        df = Database,  # database
+                        df_name=DataFrame_Name,
                         LogVar = False,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
@@ -684,8 +708,8 @@ def HR_Sampler (Database,
     
     HR_Diagram (variable='S2_surface_he4',  # variable to be used on the colorbar
                         var_name=r'Star Two Surface Helium [%]',  # name of the colorbar var
-                        DF = Database,  # database
-                        DF_name=DataFrame_Name,
+                        df = Database,  # database
+                        df_name=DataFrame_Name,
                         LogVar = False,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
@@ -697,8 +721,8 @@ def HR_Sampler (Database,
     
     HR_Diagram (variable='S2_surface_he4',  # variable to be used on the colorbar
                         var_name=r'Star Two Surface Helium [%]',  # name of the colorbar var
-                        DF = Database,  # database
-                        DF_name=DataFrame_Name,
+                        df = Database,  # database
+                        df_name=DataFrame_Name,
                         LogVar = False,  # whether or not to Log10 the var used for the colorbar
                         title='default',  # title of graph
                         saveLoc=GraphSaveLocation,  # save location of graph
