@@ -144,16 +144,16 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
                 r_dot = Star_Radius
 
             # assings axis
-            Temp = np.log10((((10 ** df[S2_log_L])/(10 ** df[S2_log_L])**2)**.25) * 5772)
+            Temp = np.log10((((10 ** df[S2_log_L])/(10 ** df[S2_log_R])**2)**.25) * 5772)
             Lum = df[S2_log_L]
         else: 
             if Star_Radius == True:
-                r_dot = 10 ** df[S1_log_R]
+                r_dot = 10 ** df['S1_log_R']
             else:
                 r_dot = Star_Radius
 
             # assings axis
-            Temp = np.log10((((10 ** df[S1_log_L])/(10 ** df[S1_log_L])**2)**.25) * 5772)
+            Temp = np.log10((((10 ** df[S1_log_L])/(10 ** df[S1_log_R])**2)**.25) * 5772)
             Lum = df[S1_log_L]
 
         # binds the color of the scatter points to the x location (temp) of the star
