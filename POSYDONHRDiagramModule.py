@@ -234,11 +234,6 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
             plt.show()
         plt.close()
 
-        print(df.columns)
-        print(S2_log_L, S2_log_R, variable)
-        print(np.isfinite(Temp).sum(), np.isfinite(Lum).sum(), np.isfinite(color_data).sum())
-
-
 
     ### Bokeh Graphing
     elif grapher == 'bokeh':
