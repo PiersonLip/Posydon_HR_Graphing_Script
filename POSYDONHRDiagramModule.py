@@ -78,7 +78,7 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
 
                     title='default',  # title of graph. if let to default it will automatically populate one based on input conditions
                     saveLoc='',  # filepath save location of graph
-                    saveGraph = False
+                    saveGraph = False,
                     Star_Radius = True,  # T/F. If set to true automatically calculates the size of the graphed point based off of the radius of the star. If NOT set to True, must input a val for the star radius ex. Star_Radius = 4
                     fileName='Default',  # filename, if left to default one is autogened based on graphing vars
                     showGraph= True, # whether or not to output the graph inline. this is very useful to disable when generating repetable graphs that are being used for something else, as it prevents bloat. for example, figs for a LaTeX paper. 
