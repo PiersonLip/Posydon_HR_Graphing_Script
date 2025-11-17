@@ -78,6 +78,7 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
 
                     title='default',  # title of graph. if let to default it will automatically populate one based on input conditions
                     saveLoc='',  # filepath save location of graph
+                    saveGraph = False
                     Star_Radius = True,  # T/F. If set to true automatically calculates the size of the graphed point based off of the radius of the star. If NOT set to True, must input a val for the star radius ex. Star_Radius = 4
                     fileName='Default',  # filename, if left to default one is autogened based on graphing vars
                     showGraph= True, # whether or not to output the graph inline. this is very useful to disable when generating repetable graphs that are being used for something else, as it prevents bloat. for example, figs for a LaTeX paper. 
@@ -113,13 +114,14 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
         S2_log_L = 'S2_log_L_i'
         S1_log_R = 'S1_log_R_i'
         S1_log_L = 'S1_log_L_i'
+
         variable = 'S1_mass_i'
     elif init_or_final == 'final':
         S2_log_L = 'S2_log_L_f'
-        S2_log_L = 'S2_log_L_f'
         S1_log_R = 'S1_log_R_f'
-        S2_log_R = 'S2_log_R_f'
         S1_log_L = 'S1_log_L_f'
+        S2_log_R = 'S2_log_R_f'
+
         variable = 'S1_mass_f'
     else:
         print('not a valiv option for initOrFinal! options or "init" or "final"')
@@ -219,11 +221,12 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
             fileName = fileName.replace(" ", "_")
         else:
             fileName = fileName if fileName.endswith('.png') else f"{fileName}.png"
-
-        # Save the figure
-        save_path = Path(saveLoc) / fileName
-        plt.savefig(save_path, dpi=dpi)
-        plt.style.use('default')
+        
+        if saveGraph == True:
+            # Save the figure
+            save_path = Path(saveLoc) / fileName
+            plt.savefig(save_path, dpi=dpi)
+            plt.style.use('default')
 
         if showGraph== True:
             plt.show()
