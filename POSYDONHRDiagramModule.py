@@ -115,14 +115,16 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
         S1_log_R = 'S1_log_R_i'
         S1_log_L = 'S1_log_L_i'
 
-        variable = 'S1_mass_i'
+        if variable == 'S1_mass':
+            variable = 'S1_mass_i'
     elif init_or_final == 'final':
+        S2_log_R = 'S2_log_R_f'
         S2_log_L = 'S2_log_L_f'
         S1_log_R = 'S1_log_R_f'
         S1_log_L = 'S1_log_L_f'
-        S2_log_R = 'S2_log_R_f'
 
-        variable = 'S1_mass_f'
+        if variable == 'S1_mass':
+            variable = 'S1_mass_i'
     else:
         print('not a valiv option for initOrFinal! options or "init" or "final"')
 
