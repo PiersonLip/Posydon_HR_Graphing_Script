@@ -113,12 +113,14 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
         S2_log_L = 'S2_log_L_i'
         S1_log_R = 'S1_log_R_i'
         S1_log_L = 'S1_log_L_i'
+        variable = 'S1_mass_i'
     elif init_or_final == 'final':
         S2_log_L = 'S2_log_L_f'
         S2_log_L = 'S2_log_L_f'
         S1_log_R = 'S1_log_R_f'
         S2_log_R = 'S2_log_R_f'
         S1_log_L = 'S1_log_L_f'
+        variable = 'S1_mass_f'
     else:
         print('not a valiv option for initOrFinal! options or "init" or "final"')
 
@@ -255,28 +257,28 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
 
             Temp = np.log10( #rearranged Stefan-Boltzmann equation for calculating Temp based off of lum and radius
                     (
-                        (10 ** df['S2_log_L']) /
-                        (10 ** df['S2_log_R']) ** 2
+                        (10 ** df[S2_log_L]) /
+                        (10 ** df[S2_log_R]) ** 2
                     ) ** 0.25
                     * 5772
                 ) 
-            Lum = df['S2_log_L']
+            Lum = df[S2_log_L]
 
         else: 
             if Star_Radius == True:
-                r_dot= 4 ** df['S1_log_R'] + 1
+                r_dot= 4 ** df[S1_log_R] + 1
             else:
                 r_dot = float(Star_Radius)
 
             # Axis values
             Temp = np.log10( #rearranged Stefan-Boltzmann equation for calculating Temp based off of lum and radius
                     (
-                        (10 ** df['S2_log_L']) /
-                        (10 ** df['S2_log_R']) ** 2
+                        (10 ** df[S2_log_R]) ** 2
+                        (10 ** df[S2_log_L]) /
                     ) ** 0.25
                     * 5772
                 )
-            Lum = df['S1_log_L']
+            Lum = df[S1_log_L]
 
         # Smart title gen. sorta rough to look at, but simple when boken down
         if title == 'default':
