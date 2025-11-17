@@ -222,7 +222,7 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
         else:
             fileName = fileName if fileName.endswith('.png') else f"{fileName}.png"
         
-        if saveGraph == True:
+        if saveGraph == True
             # Save the figure
             save_path = Path(saveLoc) / fileName
             plt.savefig(save_path, dpi=dpi)
@@ -276,11 +276,11 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
             # Axis values
             Temp = np.log10( #rearranged Stefan-Boltzmann equation for calculating Temp based off of lum and radius
                     (
-                        (10 ** df[S2_log_R]) ** 2
                         (10 ** df[S2_log_L]) /
+                        (10 ** df[S2_log_R]) ** 2
                     ) ** 0.25
                     * 5772
-                )
+                ) 
             Lum = df[S1_log_L]
 
         # Smart title gen. sorta rough to look at, but simple when boken down
