@@ -468,10 +468,11 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
         if showGraph == True:
             show(p)
 
-        html = file_html(p, CDN, title)
-        save_path = Path(saveLoc) / fileName
-        with open(save_path, "w") as f:
-            f.write(html)
+        if saveGraph == True:
+            html = file_html(p, CDN, title)
+            save_path = Path(saveLoc) / fileName
+            with open(save_path, "w") as f:
+                f.write(html)
     else: 
         print('Not a valid grapher option! Options are plt for matplotlib and bokeh for bokeh')
 

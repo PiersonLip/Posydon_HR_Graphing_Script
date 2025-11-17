@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "posydon-hr-diagram"
-version = "0.1.199"
+version = "0.1.1999"
 description = "HR diagram tools for POSYDON datasets"
 readme = "readme.md"
 requires-python = ">=3.10"
