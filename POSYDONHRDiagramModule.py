@@ -222,7 +222,7 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
         else:
             fileName = fileName if fileName.endswith('.png') else f"{fileName}.png"
         
-        if saveGraph == True
+        if saveGraph == True:
             # Save the figure
             save_path = Path(saveLoc) / fileName
             plt.savefig(save_path, dpi=dpi)
