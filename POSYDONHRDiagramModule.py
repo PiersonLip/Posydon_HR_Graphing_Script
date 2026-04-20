@@ -81,10 +81,12 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
                     saveGraph = False,
                     Star_Radius = True,  # T/F. If set to true automatically calculates the size of the graphed point based off of the radius of the star. If NOT set to True, must input a val for the star radius ex. Star_Radius = 4
                     fileName='Default',  # filename, if left to default one is autogened based on graphing vars
-                    showGraph= True, # whether or not to output the graph inline. this is very useful to disable when generating repetable graphs that are being used for something else, as it prevents bloat. for example, figs for a LaTeX paper. 
-                    palette = 'Default', #what pallete to use. this can be useful in somes cases where the plotted stars have colors similar to the white BG. 
+                    showGraph= True, # whether or not to output the graph inline. this is very useful to disable when generating repetable graphs that are being used for something else, as it prevents bloat. for example, figs for a LaTeX paper.
+                    palette = 'Default', #what pallete to use. this can be useful in somes cases where the plotted stars have colors similar to the white BG.
                     style = 'default', # what graph style to use from the PLT selection
                     dpi = 200, # dpi/res to use
+                    export_pgf = False, # whether or not to export a PGF file (plt only). useful for embedding in LaTeX
+                    pgf_transparent = False, # whether the exported PGF has a transparent background
 
                     # y-limits
                     # this may not be needed entirely? very few cases where you'd want y-lims and wouldnt just be focused on the loaded df
@@ -225,10 +227,14 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
             fileName = fileName if fileName.endswith('.png') else f"{fileName}.png"
         
         if saveGraph == True:
-            # Save the figure
             save_path = Path(saveLoc) / fileName
             plt.savefig(save_path, dpi=dpi)
             plt.style.use('default')
+
+        if export_pgf == True:
+            pgf_name = Path(fileName).stem + '.pgf'
+            pgf_path = Path(saveLoc) / pgf_name
+            plt.savefig(pgf_path, format='pgf', transparent=pgf_transparent)
 
         if showGraph== True:
             plt.show()
