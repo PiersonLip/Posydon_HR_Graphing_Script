@@ -88,6 +88,7 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
                     export_pgf = False, # whether or not to export a PGF file (plt only). useful for embedding in LaTeX
                     pgf_transparent = False, # whether the exported PGF has a transparent background
                     export_pdf = False, # whether or not to export a PDF file (plt only). useful for embedding in LaTeX
+                    pdf_transparent = False, # whether the exported PDF has a transparent background
 
                     # y-limits
                     # this may not be needed entirely? very few cases where you'd want y-lims and wouldnt just be focused on the loaded df
@@ -242,7 +243,7 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
         if export_pdf == True:
             pdf_name = Path(fileName).stem + '.pdf'
             pdf_path = Path(saveLoc) / pdf_name
-            plt.savefig(pdf_path, format='pdf')
+            plt.savefig(pdf_path, format='pdf', transparent=pdf_transparent)
 
         if showGraph== True:
             plt.show()
