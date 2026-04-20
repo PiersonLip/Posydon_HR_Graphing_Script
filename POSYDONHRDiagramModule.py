@@ -87,6 +87,7 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
                     dpi = 200, # dpi/res to use
                     export_pgf = False, # whether or not to export a PGF file (plt only). useful for embedding in LaTeX
                     pgf_transparent = False, # whether the exported PGF has a transparent background
+                    export_pdf = False, # whether or not to export a PDF file (plt only). useful for embedding in LaTeX
 
                     # y-limits
                     # this may not be needed entirely? very few cases where you'd want y-lims and wouldnt just be focused on the loaded df
@@ -175,14 +176,14 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
             ax.set_ylim(minR, maxR)
 
         #scatter points. "cmap" is setting the colormap to use, "c" is setting the color itself (based on location), "s" is setting the size of the dot based off of star radii
-        scatter = ax.scatter(Temp, Lum, cmap = cm, c = colors, s = r_dot, rasterized = not export_pgf)
+        scatter = ax.scatter(Temp, Lum, cmap = cm, c = colors, s = r_dot, rasterized = not (export_pgf or export_pdf))
 
         ax.invert_xaxis()
 
         # color bar stuff
         cbar = fig.colorbar(scatter, ax=ax, orientation='vertical')
-        if export_pgf and cbar.solids is not None:
-            cbar.solids.set_rasterized(False)  # <-- link colorbar to that scatter
+        if (export_pgf or export_pdf) and hasattr(cbar, 'solids') and cbar.solids is not None:
+            cbar.solids.set_rasterized(False)
         if LogVar == False:
             cbar.set_label(var_name if var_name != 'default' else variable) 
         else: 
@@ -193,7 +194,7 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
 
         if referenceStar == True:
             scatter = ax.scatter(np.log10(exampleTemp), np.log10(exampleLum),
-            color = 'black', s = 100, marker = '*', rasterized = not export_pgf)
+            color = 'black', s = 100, marker = '*', rasterized = not (export_pgf or export_pdf))
             if referenceStarRange == True:
 
                 log_temp_min = np.log10(exampleTempMin)
@@ -237,6 +238,11 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
             pgf_name = Path(fileName).stem + '.pgf'
             pgf_path = Path(saveLoc) / pgf_name
             plt.savefig(pgf_path, format='pgf', transparent=pgf_transparent)
+
+        if export_pdf == True:
+            pdf_name = Path(fileName).stem + '.pdf'
+            pdf_path = Path(saveLoc) / pdf_name
+            plt.savefig(pdf_path, format='pdf')
 
         if showGraph== True:
             plt.show()
