@@ -175,12 +175,14 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
             ax.set_ylim(minR, maxR)
 
         #scatter points. "cmap" is setting the colormap to use, "c" is setting the color itself (based on location), "s" is setting the size of the dot based off of star radii
-        scatter = ax.scatter(Temp, Lum, cmap = cm, c = colors, s = r_dot)
+        scatter = ax.scatter(Temp, Lum, cmap = cm, c = colors, s = r_dot, rasterized = not export_pgf)
 
         ax.invert_xaxis()
 
         # color bar stuff
-        cbar = fig.colorbar(scatter, ax=ax, orientation='vertical')  # <-- link colorbar to that scatter
+        cbar = fig.colorbar(scatter, ax=ax, orientation='vertical')
+        if export_pgf and cbar.solids is not None:
+            cbar.solids.set_rasterized(False)  # <-- link colorbar to that scatter
         if LogVar == False:
             cbar.set_label(var_name if var_name != 'default' else variable) 
         else: 
@@ -191,7 +193,7 @@ def HR_Diagram     (df,  # Pandas dataframe to used (or H5). however, it is recc
 
         if referenceStar == True:
             scatter = ax.scatter(np.log10(exampleTemp), np.log10(exampleLum),
-            color = 'black', s = 100, marker = '*')
+            color = 'black', s = 100, marker = '*', rasterized = not export_pgf)
             if referenceStarRange == True:
 
                 log_temp_min = np.log10(exampleTempMin)
